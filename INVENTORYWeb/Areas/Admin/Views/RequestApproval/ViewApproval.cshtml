@@ -1,0 +1,514 @@
+﻿@model INVENTORYWeb.Models.ViewModels.RequestItemHeaderViewModel
+
+@{
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Approval";
+    var status = @Model.REQUEST_ITEM_HEADER.STATUS;
+    var status_label = "";
+
+    switch (status)
+    {
+        case "Approve":
+            status_label = "label-success";
+            break;
+        case "Rejected":
+            status_label = "label-danger";
+            break;
+        case "approval":
+            status_label = "label-primary";
+            break;
+       
+    }
+}
+
+<div class="pcoded-content">
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Transaksi</h5>
+                        <p class="m-b-0">List Permintaan Barang</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-footer-title text-right">
+                        <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action=""> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="ApprovelRequest" asp-action="">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pcoded-inner-content">
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page body start -->
+                <div class="page-body">
+                    <form method="post">
+                        <div class="row">
+                            <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />
+                            @*       <input type="hidden" asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" id="TotalQty" /> *@
+                            @if (Model.REQUEST_ITEM_HEADER.ID != 0)
+                            {
+                                title = "Approval";
+                                <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />
+                            }
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>@title</h5>
+                                          @* <button type="button" class="btn btn-primary waves-effect waves-light f-right d-inline-block md-trigger" data-modal="modal-adjust"> <i class="icofont icofont-plus m-r-5"></i> Adjust</button> *@
+                                        <div class="nav-item nav-grid">
+                                            <div class="tool-box">
+                                                <div class="dropdown-secondary dropdown f-right">
+                                                    <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                                        <a class="dropdown-item waves-light waves-effect" onclick=ApproveHeader($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Approve</a>
+                                                        <a class="dropdown-item waves-light waves-effect" onclick=RejectHeader($('#IdHeader').val())><i class="icofont icofont-close-circled"></i> Reject</a>
+                                                      
+                                                    </div>                                                   
+                                                    <span class="f-left m-r-5 text-inverse">Status : <strong class="label @status_label">@Model.REQUEST_ITEM_HEADER.STATUS &nbsp;&nbsp;</strong></span>
+                                                </div>
+                                               
+                                            </div>
+                                          
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                              
+                                        @* <div id="toolbar-options" class="hidden">
+                                            <a href="#" title="approve"><i class="fa fa-check"></i></a>
+                                            <a href="#" title="cancel"><i class="fa fa-close"></i></a>
+                                           
+                                        </div> *@
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group row pt-2">
+
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" readonly />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>                                                    
+
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" readonly />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row pt-2">
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap" readonly></textarea>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+
+                                                            <label class="col-sm-3 col-form-label">Jumlah Permintaan</label>
+                                                            <div class="col-9">
+                                                                <input asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" class="form-control" style="row-gap" asp-format="{0:#,###}" id="TOTAL_QTY" readonly />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                              @* 
+                                                <div class="nav-item nav-grid">
+                                                    <div class="tool-box">
+                                                        <div data-toolbar="user-options" class="btn-toolbar btn-success btn-toolbar-success" id="success-toolbar"><i class="fa fa-cog"></i></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+
+                                                </div> *@
+                                               
+                                       @*          <a class="btn waves-effect waves-light btn-success m-b-10 btn-sm f-right m-r-10" style="color:white" onclick="ExportPDF()"><i class="icofont icofont-ui-check"></i>Approve</a> *@
+                                            </div>
+                                           
+                                            <div class="col-12">
+                                                <div class="card-block">
+                                                    <div class="dt-responsive table-responsive">
+                                                        <table id="tblData" class="table table-striped table-bordered nowrap" style="width:100%">
+                                                            <thead>
+
+                                                                <tr>
+                                                                    <th>
+                                                                        Nama Item
+                                                                    </th>
+
+                                                                    <th>
+                                                                        Satuan
+                                                                    </th>
+
+                                                                    <th>
+                                                                        Isi
+                                                                    </th>
+                                                                    <th>
+                                                                        Jumlah
+                                                                    </th>
+                                                                    <th>
+                                                                        Status
+                                                                    </th>
+                                                                     <th>
+                                                                        Notes
+                                                                    </th>
+                                                                    <th style="min-width:10px">
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                  
+                                </div>
+
+                                <div class="row text-center">
+                                    <div class="col-sm-12 invoice-btn-group text-center">
+                                        <button type="submit" class="btn btn-warning btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" style="background-color:rgb(255,168,20)"><i class="icofont icofont-save"></i>Process</button>
+                                     
+                                        <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
+                                   @*      <a asp-action="Index" class="btn btn-inverse btn-outline-inverse previous m-b-10 btn-sm"><i class="icofont icofont-undo"></i>Kembali</a> *@
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Page body end -->
+
+                        </div>
+                    </form>
+
+                    <div class="md-modal md-effect-13 addcontact" id="modal-adjust">
+                        <div class="md-content">
+                            <h3 class="f-26">Keterangan</h3>
+                            <div class="form-material">
+
+                                <div class="material-group">
+                                    <div class="form-group form-primary">                                
+                                        <textarea asp-for="REQUEST_ITEM_HEADER.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectHeader_note"></textarea>
+                                        <span class="form-bar"></span>                                        
+                                    </div>
+                                </div>
+                          
+
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectHeader(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
+                                    <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-modal md-effect-13 addcontact" id="modal-detail">
+                        <div class="md-content">
+                            <h3 class="f-26">Keterangan</h3>
+                            <div class="form-material">
+
+                                <div class="material-group">
+                                    <div class="form-group form-primary">
+                                        <textarea asp-for="REQUEST_ITEM_DETAIL.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectDetail_note"></textarea>
+                                        <span class="form-bar"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectDetail(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
+                                    <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-overlay"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+  
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            loadDataItems();
+        });
+
+        function loadDataItems() {
+            var id = $('#IdHeader').val();
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": "/Admin/RequestApproval/GetAllItems",
+                    "data": {
+                        "id": id
+                    }
+
+                },
+                "columns": [
+                    { "data": "name", "autoWidth": true },
+                    { "data": "satuan", "autoWidth": true },
+                    { "data": "piece", "autoWidth": true },
+                    { "data": "qty", "autoWidth": true },
+                    { "data": "status", "autoWidth": true },
+                    { "data": "notes", "autoWidth": true },
+                    {
+                        "data": "id",
+                        "render": function (data) {
+                            return `
+                            
+                            <div class="dropdown-secondary dropdown">
+                                <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
+                                <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                    <a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("${data}")><i class="icofont icofont-check-circled"></i> Approve</a>
+                                    <a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("${data}")><i class="icofont icofont-close-circled"></i> Reject</a>
+                                    <a class="dropdown-item waves-light waves-effect" onclick=AdjustDetail("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
+                                            
+                                </div>
+                            </div>
+                                `;
+                        }, "autoWidth": true
+                    }
+                ],
+                "createdRow": function (row, data, index) {
+                    $('td', row).eq(2).attr("style", "text-align: right");
+                    $('td', row).eq(3).attr("style", "text-align: right");
+
+                }
+            });
+        }        
+
+        function ApproveHeader(id) {
+            var url = "/Admin/RequestApproval/ApproveHeader/" + id;
+            swal({
+                title: "Are you sure you want to Approve?",
+                icon: "success",
+                showCancelButton: true,
+                reverseButtons: true
+            },
+                function () {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Approve!", data.message, "success");
+
+                            }
+                            else {
+                                swal("Approve!", data.message, "error");
+                            }
+                            dataTable.ajax.reload();
+                        }
+                    });
+                });
+        }
+        function RejectHeader(id) {
+
+            var url = "/Admin/RequestApproval/RejectHeader";
+            swal({
+			title: "Apakah anda ingin membatalkan permintaan?",
+			text: "Keterangan  :",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "isi keterangan penolakan"
+		    }, function (inputValue) {
+			    if (inputValue === false) return false;
+			    if (inputValue === "") {
+				    swal.showInputError("Keterangan harus diisi!");
+				    return false
+			    }
+			     $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        data: {
+                            "id": id,
+                            "notes": inputValue
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Reject!", data.message, "success");
+
+                            }
+                            else {
+                                swal("Reject!", data.message, "error");
+                            }
+                            // $("#rejectHeader_note").val('');
+                            dataTable.ajax.reload();
+                        }
+                    });
+		    });
+         
+            // var url = "/Admin/RequestApproval/RejectHeader" ;
+            // swal({
+            //     title: "Are you sure you want to Reject?",
+            //     // text: "Anda tidak akan dapat memulihkan data!",
+            //     type: "warning",
+            //     showCancelButton: true,
+            //     confirmButtonClass: "btn-danger",
+            //     confirmButtonText: "Reject",
+            //     closeOnConfirm: false
+            // },
+            //     function () {
+            //         $.ajax({
+            //             type: "DELETE",
+            //             url: url,
+            //             data: {
+            //                 "id": id,
+            //                 "notes": $("#rejectHeader_note").val()
+            //             },
+            //             success: function (data) {
+            //                 if (data.success) {
+            //                     swal("Reject!", data.message, "success");
+
+            //                 }
+            //                 else {
+            //                     swal("Reject!", data.message, "error");
+            //                 }
+            //                 $("#rejectHeader_note").val('');
+            //                 dataTable.ajax.reload();
+            //             }
+            //         });
+            //     });
+
+        }
+        function ApproveDetail(id) {
+            var url = "/Admin/RequestApproval/ApproveDetail/" + id;
+            swal({
+                title: "Are you sure you want to Approve?",
+                icon: "success",
+                showCancelButton: true,
+                reverseButtons: true
+            },
+                function () {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Approve!", data.message, "success");
+
+                            }
+                            else {
+                                swal("Approve!", data.message, "error");
+                            }
+                            dataTable.ajax.reload();
+                        }
+                    });
+                });
+        }
+        function RejectDetail(id) {
+
+            var url = "/Admin/RequestApproval/RejectDetail";
+            swal({
+			title: "Apakah anda ingin membatalkan permintaan?",
+			text: "Keterangan  :",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "isi keterangan penolakan"
+		    }, function (inputValue) {
+			    if (inputValue === false) return false;
+			    if (inputValue === "") {
+				    swal.showInputError("Keterangan harus diisi!");
+				    return false
+			    }
+			     $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        data: {
+                            "id": id,
+                            "notes": inputValue
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Reject!", data.message, "success");
+
+                            }
+                            else {
+                                swal("Reject!", data.message, "error");
+                            }
+                            // $("#rejectHeader_note").val('');
+                            dataTable.ajax.reload();
+                        }
+                    });
+		    });
+
+        }
+
+        function AdjustDetail(id) {
+
+            var url = "/Admin/RequestApproval/RejectDetail";
+            swal({
+			title: "Apakah anda ingin merubah jumlah permintaan?",
+			text: "Keterangan  :",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "isi keterangan penolakan"
+		    }, function (inputValue) {
+			    if (inputValue === false) return false;
+			    if (inputValue === "") {
+				    swal.showInputError("Keterangan harus diisi!");
+				    return false
+			    }
+			     $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        data: {
+                            "id": id,
+                            "notes": inputValue
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Reject!", data.message, "success");
+
+                            }
+                            else {
+                                swal("Reject!", data.message, "error");
+                            }
+                            // $("#rejectHeader_note").val('');
+                            dataTable.ajax.reload();
+                        }
+                    });
+		    });
+
+        }
+    </script>
+
+}

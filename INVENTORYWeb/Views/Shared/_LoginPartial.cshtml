@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@* 
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+    </li>
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}
+</ul> *@
+
+<ul class="nav-right">
+
+    <li class="user-profile header-notification">
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a class="waves-effect waves-light">
+                <img src="/files/assets/images/avatar-blank.png" class="img-radius" alt="User-Profile-Image">
+                <span>@UserManager.GetUserName(User)</span>
+                <i class="ti-angle-down"></i>
+            </a>
+            <ul class="show-notification profile-notification">
+                <li class="waves-effect waves-light">                  
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                        <i class="ti-user"></i> View Profile
+                    </a>
+
+                </li>
+                
+               
+                <li class="waves-effect waves-light">
+
+                    <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button id="logout" type="submit" class="btn btn-default btn-squared"><i class="ti-layout-sidebar-left"></i>Logout</button>
+                    </form>
+                </li>
+
+            </ul>
+        }
+        else
+        {
+            <a class="waves-effect waves-light">
+                <img src="/files/assets/images/avatar-blank.png" class="img-radius" alt="User-Profile-Image">
+                <i class="ti-angle-down"></i>
+            </a>
+            <ul class="show-notification profile-notification">
+
+                <li class="waves-effect waves-light">
+                    <a id="login" asp-area="Identity" asp-page="/Account/Login">
+                        <i class="ti-layout-sidebar-left"></i> Login
+                    </a>
+                <li class="waves-effect waves-light">
+                    <a id="register" asp-area="Identity" asp-page="/Account/Register">
+                        <i class="ti-layout-sidebar-left"></i> Register
+                    </a>
+                </li>
+
+            </ul>
+        }
+
+    </li>
+</ul>

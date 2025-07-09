@@ -1,0 +1,83 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="pcoded-content">
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">User</h5>
+                        <p class="m-b-0">Informasi User</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-footer-title text-right">
+                        <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Pengaturan" asp-action="Index"> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Pengaturan" asp-action="Index">Pengaturan User</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pcoded-inner-content">
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-body start -->
+                <div class="page-body">
+                    <form id="profile-form" method="post">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Update Data</h5>
+                                    </div>
+                                    <div class="card-block">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                                                    <label asp-for="Username" class="form-label"></label>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                                                    <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-sm-12 invoice-btn-group text-center">
+                                        <button type="submit" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20"><i class="icofont icofont-save"></i>Simpan</button>
+                                        <a type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-area="Admin" asp-controller="Home" asp-action="Index"><i class="icofont icofont-ui-close"></i>Batal</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+                <!-- Page-body end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,54 @@
+﻿@if (TempData["success"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        @* toastr.success('@TempData["success"]'); *@
+             $(document).ready( function () {
+                new PNotify({
+                    title: 'Simpan Berhasil ',
+                    text: '@TempData["success"]',
+                    icon: 'icofont icofont-info-circle',
+                    type: 'success'
+                });
+            });
+    </script>
+}
+@if (TempData["error"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        @*  toastr.error('@TempData["error"]'); *@
+            $(document).ready( function () {
+                new PNotify({
+                title: 'Error Simpan ',
+                text: '@TempData["error"]',
+                icon: 'icofont icofont-info-circle',
+                type: 'error'
+            });
+        });
+
+        
+    </script>
+}
+@if (TempData["errorLogin"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        @*  toastr.error('@TempData["error"]'); *@
+            $(document).ready(function () {
+                new PNotify({
+                    title: 'Gagal Login ',
+                    text: '@TempData["errorLogin"]',
+                    icon: 'icofont icofont-info-circle',
+                    type: 'error'
+                });
+            });
+
+
+    </script>
+}

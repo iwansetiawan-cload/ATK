@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Text.RegularExpressions
+@using INVENTORYWeb.Utility
+@using INVENTORYWeb.DataAccess.Repository.IRepository
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> _roleManager
+@inject IUnitOfWork _unitOfWork
+
+@{
+    string? rolesName = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == UserManager.GetUserName(User)).Select(i => i.RolesName).FirstOrDefault();
+}
+
+<nav class="pcoded-navbar">
+    <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+    <div class="pcoded-inner-navbar main-menu">
+        <div class="">
+            <div class="main-menu-header">
+                <img class="img-80 img-radius" src="/files/assets/images/avatar-blank.png" alt="User-Profile-Image">
+                <div class="user-details">
+                    <span id="more-details">@UserManager.GetUserName(User)<i class="fa fa-caret-down"></i></span>
+                </div>
+            </div>
+
+            <div class="main-menu-content">
+                <ul>
+                    <li class="more-details">
+                   @*      <a href="/"><i class="ti-user"></i>View Profile</a> *@
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index" title="View Profile">
+                            <i class="ti-user"></i> View Profile
+                        </a>                        
+                      
+                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="logout" type="submit" class="btn btn-default btn-squared" title="Logout"><i class="ti-layout-sidebar-left"></i>Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="p-15 p-b-0">
+            <form class="form-material">
+                <div class="form-group form-primary">
+                   @*  <input type="text" name="footer-email" class="form-control" required=""> *@
+                    <span class="form-bar"></span>
+                </div>
+            </form>
+        </div>  
+        @* <div class="pcoded-navigation-label">Pages</div>      *@   
+        <ul class="pcoded-item pcoded-left-item" >           	
+            <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/OrderItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/OrderItems/Upsert" ||
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/DeliveryItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/DeliveryItems/Upsert" ||
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems/Upsert/"
+                ? "active pcoded-trigger":"" )">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                    <span class="pcoded-mtext">Home</span>
+                    <span class="selected"></span>
+
+                </a>
+                <ul class="pcoded-submenu">
+                    <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin"? "active":"" )">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext">Dashboard</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                             
+            </li>
+        </ul>
+        @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Category" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Category/Upsert" ||
+                    Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Items" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Items/Upsert"  ? "active pcoded-trigger":"" )">
+                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="fa fa-database"></i><b>FC</b></span>
+                        <span class="pcoded-mtext">Master Data</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Category" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Category/Upsert" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="Category" asp-action="" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Satuan</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Items" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Items/Upsert/" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="Items" asp-action="" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Barang</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+        }
+
+        <ul class="pcoded-item pcoded-left-item">
+            <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert/" ||  Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert" ||
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ViewApproval/" ||
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems/Upsert"
+                ? "active pcoded-trigger":"" )">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                    <span class="pcoded-mtext">Transaksi</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
+                    @if (rolesName == OI.Role_User || rolesName == OI.Role_SuperAdmin)
+                    {
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert" ? "active":"" )">
+                            <a asp-area="Users" asp-controller="RequestItems" asp-action="Index" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Permintaan Barang</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Pengembalian Barang</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                    }
+                    @if (rolesName == OI.Role_Admin || rolesName == OI.Role_SuperAdmin)
+                    {
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ViewApproval/" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="RequestApproval" asp-action="Index" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Process Approval</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </li>
+
+        </ul>
+               
+        
+    
+        @if (rolesName == OI.Role_SuperAdmin)
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Identity/Account/CreateUser" ? "active pcoded-trigger":"" )">
+                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-settings"></i><b>FC</b></span>
+                        <span class="pcoded-mtext">Pengaturan User</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    <ul class="pcoded-submenu">
+
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="Pengaturan" asp-action="" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">User Akses</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        }
+
+    </div>
+</nav>
+
+
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+ 
+      
+	</script>
+}

@@ -1,0 +1,125 @@
+﻿@model INVENTORYWeb.Models.ViewModels.ItemsViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Tambah Data";
+}
+
+<div class="pcoded-content">
+    <!-- Page-header start -->
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Barang</h5>
+                        <p class="m-b-0">@title Barang</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-footer-title text-right">
+                        <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action=""> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page-header end -->
+    <div class="pcoded-inner-content">
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-body start -->
+                <div class="page-body">
+                    <form method="post">
+                        @if (Model.Items.ID != 0)
+                        {
+                            //edit
+                            title = "Edit Data";
+                        }
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>@title</h5>
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-xl-8 m-b-30">
+                                                <input type="hidden" asp-for="Items.ID" class="form-control" />
+
+                                                <div class="form-group row">
+                                                    <label asp-for="Items.NAME" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" asp-for="Items.NAME" class="form-control">
+                                                        <span asp-validation-for="Items.NAME" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="Items.CATEGORY" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <select asp-for="Items.CATEGORY_ID" asp-items="@Model.SatuanList" class="form-control form-select">
+                                                            <option disabled selected>- pilih satuan -</option>
+                                                        </select>                                                     
+                                                        <span asp-validation-for="Items.CATEGORY_ID" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="Items.PIECE" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <select asp-for="Items.PIECE" asp-items="@Model.IsiList" class="form-control form-select">
+                                                            <option disabled selected>- pilih isi -</option>
+                                                        </select>
+                                                        <span asp-validation-for="Items.PIECE" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                               
+                                              @*   <div class="form-group row">
+                                                    <label asp-for="Items.QTY" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" asp-for="Items.QTY" class="form-control">
+                                                        <span asp-validation-for="Items.QTY" class="text-danger"></span>
+                                                    </div>
+                                                </div> *@
+                                              @*   <div class="form-group row">
+                                                    <label asp-for="Items.STOCK" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" asp-for="Items.STOCK" class="form-control">
+                                                        <span asp-validation-for="Items.STOCK" class="text-danger"></span>
+                                                    </div>
+                                                </div> *@
+                                                <div class="form-group row">
+                                                    <label asp-for="Items.DESCRIPTION" class="col-sm-4 col-form-label"></label>
+                                                    <div class="col-sm-8">
+                                                        <textarea asp-for="Items.DESCRIPTION" class="form-control"></textarea>
+                                                        <span asp-validation-for="Items.DESCRIPTION" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-sm-12 invoice-btn-group text-center">
+                                        <button type="submit" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20"><i class="icofont icofont-save"></i>Simpan</button>
+                                        <a type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-action="Index"><i class="icofont icofont-ui-close"></i>Batal</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- Page-body end -->
+            </div>
+        </div>
+    </div>
+</div>
