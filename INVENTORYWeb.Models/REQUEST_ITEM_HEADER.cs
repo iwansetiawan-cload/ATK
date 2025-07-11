@@ -16,6 +16,8 @@ namespace INVENTORYWeb.Models
         public string PROJECT_NAME { get; set; }
         [Display(Name = "Keterangan")]
         public string? NOTES { get; set; }
+        public long ROW_NUMBER { get; set; }
+        public string? REQUEST_ORDER_NO{ get; set; }
         public string? REQUESTER { get; set; }
         [Display(Name = "Tanggal Permintaan")]
         public DateTime? REQUEST_DATE { get; set; }

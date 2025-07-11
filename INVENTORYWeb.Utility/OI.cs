@@ -13,6 +13,6 @@ namespace INVENTORYWeb.Utility
         public const string Role_SuperAdmin = "SuperAdmin";
 
         public const string Proc_AuditTrail_SaveHeader = "Sp_AuditTrail_SaveHeader";
-        public const string Proc_AuditTrail_SaveDetail = "Sp_AuditTrail_SaveDetail";
+        public const string Proc_Get_AuditTrail_ById = "Sp_GetAuditTrail_ById";
     }
 }

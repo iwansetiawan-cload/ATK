@@ -4,6 +4,14 @@
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
+@using INVENTORYWeb.DataAccess.Repository.IRepository
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject IUnitOfWork _unitOfWork
+
+@{
+    string? rolesName = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == UserManager.GetUserName(User)).Select(i => i.RolesName).FirstOrDefault();
+}
 
 <div class="pcoded-content">
     <div class="page-header">
@@ -62,7 +70,7 @@
                                 <div class="row text-center">
                                     <div class="col-sm-12 invoice-btn-group text-center">
                                         <button type="submit" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20"><i class="icofont icofont-save"></i>Simpan</button>
-                                        <a type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-area="Admin" asp-controller="Home" asp-action="Index"><i class="icofont icofont-ui-close"></i>Batal</a>
+                                        <a type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-area="@rolesName" asp-controller="Home" asp-action="Index"><i class="icofont icofont-ui-close"></i>Batal</a>
                                     </div>
 
                                 </div>

@@ -46,31 +46,45 @@
                 </div>
             </form>
         </div>  
-        @* <div class="pcoded-navigation-label">Pages</div>      *@   
-        <ul class="pcoded-item pcoded-left-item" >           	
-            <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/OrderItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/OrderItems/Upsert" ||
-                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/DeliveryItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/DeliveryItems/Upsert" ||
-                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems/Upsert/"
+        @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" 
                 ? "active pcoded-trigger":"" )">
-                <a href="javascript:void(0)" class="waves-effect waves-dark">
-                    <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
-                    <span class="pcoded-mtext">Home</span>
-                    <span class="selected"></span>
+                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                        <span class="pcoded-mtext">Home</span>
+                        <span class="selected"></span>
 
-                </a>
-                <ul class="pcoded-submenu">
-                    <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin"? "active":"" )">
-                        <a asp-area="Admin" asp-controller="Home" asp-action="" class="waves-effect waves-dark">
-                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                            <span class="pcoded-mtext">Dashboard</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    
-                </ul>
-                             
-            </li>
-        </ul>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin"? "active":"" )">
+                            <a asp-area="Admin" asp-controller="Home" asp-action="" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Dashboard</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+            </ul>
+        }
+        else
+        {         
+
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/"? "active":"" )">
+                    <a asp-area="Users" asp-controller="Home" asp-action="" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-home"></i></span>
+                        <span class="pcoded-mtext">Home</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+            </ul>
+        }
+
         @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
         {
             <ul class="pcoded-item pcoded-left-item">
@@ -124,13 +138,13 @@
                                 <span class="pcoded-mcaret"></span>
                             </a>
                         </li>
-                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" ? "active":"" )">
+                     @*    <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" ? "active":"" )">
                             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="waves-effect waves-dark">
                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                 <span class="pcoded-mtext">Pengembalian Barang</span>
                                 <span class="pcoded-mcaret"></span>
                             </a>
-                        </li>
+                        </li> *@
                     }
                     @if (rolesName == OI.Role_Admin || rolesName == OI.Role_SuperAdmin)
                     {
@@ -148,8 +162,33 @@
 
         </ul>
                
-        
-    
+        @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" ? "active pcoded-trigger":"" )">
+                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="icofont icofont-copy-alt"></i><b>FC</b></span>
+                        <span class="pcoded-mtext">Laporan</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" ? "active":"" )">
+                            <a asp-area="Admin" asp-controller="HonorMengajar" asp-action="Index" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                <span class="pcoded-mtext">Permintaan Barang</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+
+                </li>
+
+            </ul>
+
+        }
+      
         @if (rolesName == OI.Role_SuperAdmin)
         {
             <ul class="pcoded-item pcoded-left-item">

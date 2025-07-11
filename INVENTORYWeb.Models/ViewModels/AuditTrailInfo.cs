@@ -17,4 +17,15 @@ namespace INVENTORYWeb.Models.ViewModels
         public string ApplicationId { get; set; } = string.Empty;
         public Guid? AuditTrailId { get; set; } = Guid.Empty;
     }
+    public class DataHistoryList
+    {
+        public IEnumerable<HistoryApproval>? ListData { get; set; }
+    }
+    public class HistoryApproval
+    {
+        public string? Status { get; set; }
+        public string? EntryBy { get; set; }
+        public string? EntryDate { get; set; }
+        public string? Notes { get; set; }
+    }
 }

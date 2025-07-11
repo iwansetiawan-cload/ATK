@@ -37,15 +37,16 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
         {
             var allObj = (from z in _unitOfWork.RequestItemHeader.GetAll() select new {
                 id = z.ID,
+                transaction_number = z.REQUEST_ORDER_NO,
                 project_name = z.PROJECT_NAME,
                 request_date = z.REQUEST_DATE.HasValue ? z.REQUEST_DATE.Value.ToString("yyyy-MM-dd") : "",
                 notes = z.NOTES,
                 status = z.STATUS,
                 status_id = z.STATUS_ID
-            });
+            }).Where(x=>x.status_id >= 0);
             if (status == "waitingApproval")
             {
-                allObj = allObj.Where(z => z.status_id == null).ToList();
+                allObj = allObj.Where(z => z.status_id == 0).ToList();
             }
             else if (status == "approval")
             {
@@ -200,6 +201,19 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     requestItemDetail.REJECTED_DATE = null;
                     requestItemDetail.REJECTED_NOTES = null;
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+
+                    AuditTrailInfo auditTrailInfoDetail = new()
+                    {
+                        UserName = user.Name,
+                        ModuleName = "RequestApproval/ApproveHeader",
+                        TransactionId = requestItemDetail.ID,
+                        ActionName = status?.TEXT1 ?? string.Empty,
+                        OtherInfo = string.Empty,
+                        AuditTrailType = status?.INUM1 ?? 0,
+                        ApplicationId = user.Id,
+                        AuditTrailId = Guid.Empty,
+                    };
+                    SaveAuditTrail(auditTrailInfoDetail);
                 }
                 _unitOfWork.Save();
 
@@ -215,12 +229,12 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 };
                 SaveAuditTrail(auditTrailInfo);
                 TempData["Success"] = "Successfully approved";
-                return Json(new { success = true, message = "Approved Successful" });
+                return Json(new { success = true, message = "Approved Successful" , status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
             {
                 TempData["Failed"] = "Error approved";
-                return Json(new { success = false, message = "Approved Error" });
+                return Json(new { success = false, message = "Approved Error"});
             }
 
         }
@@ -251,9 +265,23 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     requestItemDetail.STATUS = status?.TEXT1;
                     requestItemDetail.REJECTED_BY = user.UserName;
                     requestItemDetail.REJECTED_DATE = DateTime.Now;
+                    requestItemDetail.REJECTED_NOTES = notes;
                     requestItemDetail.APPROVE_BY = null;
                     requestItemDetail.APPROVE_DATE = null;
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+
+                    AuditTrailInfo auditTrailInfoDetail = new()
+                    {
+                        UserName = user.Name,
+                        ModuleName = "RequestApproval/RejectHeader",
+                        TransactionId = requestItemDetail.ID,
+                        ActionName = status?.TEXT1 ?? string.Empty,
+                        OtherInfo = notes ?? string.Empty,
+                        AuditTrailType = status?.INUM1 ?? 0,
+                        ApplicationId = user.Id,
+                        AuditTrailId = Guid.Empty,
+                    };
+                    SaveAuditTrail(auditTrailInfoDetail);
                 }
                 _unitOfWork.Save();
 
@@ -475,7 +503,27 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 string msg = ex.Message;
             }            
         }
+        [HttpGet]
+        public IActionResult GetHistory(long id)
+        {
+            DataHistoryList obj = new DataHistoryList();
 
+            var parameter = new DynamicParameters();
+            parameter.Add("@Id", id);
+            obj.ListData = _unitOfWork.SP_Call.List<HistoryApproval>(OI.Proc_Get_AuditTrail_ById, parameter);
+
+            var datalist = (from z in obj.ListData
+                            select new
+                            {
+                                status = z.Status,
+                                entryBy = z.EntryBy,
+                                entryDate = z.EntryDate,
+                                notes = z.Notes,
+                            }).ToList();
+
+            return Json(new { data = datalist });
+
+        }
 
     }
 }

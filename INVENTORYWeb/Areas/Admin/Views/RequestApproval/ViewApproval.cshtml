@@ -8,14 +8,17 @@
 
     switch (status)
     {
+        case "New Request":
+            status_label = "label label-primary";
+            break;
         case "Approve":
-            status_label = "label-success";
+            status_label = "label label-success";
             break;
         case "Rejected":
-            status_label = "label-danger";
+            status_label = "label label-danger";
             break;
-        case "approval":
-            status_label = "label-primary";
+        case "Complete":
+            status_label = "label label-info";
             break;
        
     }
@@ -57,27 +60,35 @@
                             {
                                 title = "Approval";
                                 <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />
+                                
+
                             }
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5>@title</h5>
+                                        <h5>@title</h5>                                     
                                           @* <button type="button" class="btn btn-primary waves-effect waves-light f-right d-inline-block md-trigger" data-modal="modal-adjust"> <i class="icofont icofont-plus m-r-5"></i> Adjust</button> *@
                                         <div class="nav-item nav-grid">
                                             <div class="tool-box">
                                                 <div class="dropdown-secondary dropdown f-right">
+                                                    <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="text-inverse">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                                     <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                                         <a class="dropdown-item waves-light waves-effect" onclick=ApproveHeader($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Approve</a>
                                                         <a class="dropdown-item waves-light waves-effect" onclick=RejectHeader($('#IdHeader').val())><i class="icofont icofont-close-circled"></i> Reject</a>
-                                                      
+                                                        <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
                                                     </div>                                                   
-                                                    <span class="f-left m-r-5 text-inverse">Status : <strong class="label @status_label">@Model.REQUEST_ITEM_HEADER.STATUS &nbsp;&nbsp;</strong></span>
+                                                    <span class="f-left m-r-5 text-inverse">Status : <strong class="@status_label"> @Model.REQUEST_ITEM_HEADER.STATUS &nbsp;&nbsp;</strong></span>
+                                                   @*   <span class="f-left m-r-5 text-inverse">Status : 
+                                                          <input asp-for="REQUEST_ITEM_HEADER.STATUS" class="form-control @status_label"  id="curent_status" />
+                                                     </span> *@
+                                                    
                                                 </div>
                                                
                                             </div>
                                           
-                                        </div>
+                                        </div>                              
+
                                     </div>
                                     <div class="card-block">
                               
@@ -258,7 +269,117 @@
     </div>
 </div>
 
+ <div class="md-modal md-effect-13 addcontact" id="modal-13">
+    <div class="md-content">
+    @*     <h3 class="f-20">History Approval</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button> *@
+        <div class="form-material">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lookupProjectLabel">Cari Data Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
 
+                    <div class="card-block">
+                        <div class="dt-responsive table-responsive">
+                            <table id="tblDataMasterProject" class="table table-striped table-bordered nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th style="display:none">Id</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Close</button>
+                </div>
+            </div>
+       
+        </div>
+    </div>
+</div>
+
+<div class="md-overlay"></div>
+<!-- Modal -->@* 
+<div class="modal fade" id="lookupHostory">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lookupProjectLabel">History Approval</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+
+                    <div class="card-block">
+                        <div class="dt-responsive table-responsive">
+                            <table id="tblDataHistory" class="table table-striped table-bordered nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Entry By</th>
+                                        <th>Entry Date</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div> *@
+
+<div class="modal fade" id="lookupHostory" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lookupProjectLabel">Cari Data Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">          
+                <div class="card">
+
+                    <div class="card-block">
+                        <div class="dt-responsive table-responsive">
+                            <table id="tblDataHistory" class="table table-striped table-bordered nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                       <th>Status</th>
+                                        <th>Entry By</th>
+                                        <th>Entry Date</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
 
 @section Scripts {
   
@@ -297,7 +418,7 @@
                                     <a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("${data}")><i class="icofont icofont-check-circled"></i> Approve</a>
                                     <a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("${data}")><i class="icofont icofont-close-circled"></i> Reject</a>
                                     <a class="dropdown-item waves-light waves-effect" onclick=AdjustDetail("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
-                                            
+                                    <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("${data}") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>     
                                 </div>
                             </div>
                                 `;
@@ -310,12 +431,35 @@
 
                 }
             });
-        }        
+        }    
+        function loadDataHistory(id) {
+            var table = $('#tblDataHistory').DataTable();
+            table.clear().draw();
+            table.destroy();
+            table = $('#tblDataHistory').DataTable({
+                "ajax": {
+                    "url": "/Admin/RequestApproval/GetHistory/" + id,
+                    'method': "GET",
+                    "searching": true
+                },
+                "columns": [
+                    { "data": "status", "autoWidth": true },
+                    { "data": "entryBy", "autoWidth": true },
+                    { "data": "entryDate", "autoWidth": true },
+                    { "data": "notes", "autoWidth": true }
+                    
+                ],
+                "createdRow": function (row, data, index) {
+                    $(row).attr('onclick', 'select_row_project(this)');
+                    $(row).attr('data-dismiss', 'modal');
+                }
+            });
+        }
 
         function ApproveHeader(id) {
             var url = "/Admin/RequestApproval/ApproveHeader/" + id;
             swal({
-                title: "Are you sure you want to Approve?",
+                title: "Apakah Anda yakin ingin Menyetujui?",
                 icon: "success",
                 showCancelButton: true,
                 reverseButtons: true
@@ -327,7 +471,7 @@
                         success: function (data) {
                             if (data.success) {
                                 swal("Approve!", data.message, "success");
-
+                                $("#curent_status").val(data.status);
                             }
                             else {
                                 swal("Approve!", data.message, "error");
@@ -410,7 +554,7 @@
         function ApproveDetail(id) {
             var url = "/Admin/RequestApproval/ApproveDetail/" + id;
             swal({
-                title: "Are you sure you want to Approve?",
+                title: "Apakah Anda yakin ingin Menyetujui?",
                 icon: "success",
                 showCancelButton: true,
                 reverseButtons: true
@@ -470,7 +614,6 @@
 		    });
 
         }
-
         function AdjustDetail(id) {
 
             var url = "/Admin/RequestApproval/RejectDetail";

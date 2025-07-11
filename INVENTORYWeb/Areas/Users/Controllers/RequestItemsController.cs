@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NuGet.Configuration;
 using System.Data;
 using System.Drawing.Drawing2D;
@@ -32,25 +35,46 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = (from z in _unitOfWork.RequestItemHeader.GetAll() select new {
-                id = z.ID,
-                project_name = z.PROJECT_NAME,
-                request_date = z.REQUEST_DATE.HasValue ? z.REQUEST_DATE.Value.ToString("yyyy-MM-dd") : "",
-                notes = z.NOTES,
-                status = z.STATUS
-            });
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+            var allObj = (from z in _unitOfWork.RequestItemHeader.GetAll()
+                          select new
+                          {
+                              id = z.ID,
+                              project_name = z.PROJECT_NAME,
+                              transaction_number = z.REQUEST_ORDER_NO,
+                              request_date = z.REQUEST_DATE.HasValue ? z.REQUEST_DATE.Value.ToString("yyyy-MM-dd") : "",
+                              notes = z.NOTES,
+                              status_id = z.STATUS_ID,
+                              status = z.STATUS,
+                              row_number = z.ROW_NUMBER,
+                              entry_by = z.CREATE_BY,
+                          }).Where(x => x.entry_by == user.UserName && x.status_id >= 0);
 
             return Json(new { data = allObj });
         }
 
         [HttpGet]
+        public IActionResult GetAllMasterProject()
+        {
+            var allObj = (from z in _unitOfWork.MasterProject.GetAll()
+                          select new
+                          {
+                              id = z.ID,
+                              project_name = z.PROJECT_NAME
+                          });
+            return Json(new { data = allObj });
+        }
+        [HttpGet]
         public async Task<IActionResult> GetAllMasterItems()
         {
-            var allObj = await _unitOfWork.Items.GetAllAsync(includeProperties: "CATEGORY");
+            var allObj = await _unitOfWork.Items.GetAllAsync(includeProperties: "CATEGORY");          
             return Json(new { data = allObj });
         }
         public IActionResult Upsert(long? id)
-        {
+            {
             var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
             ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
             AddListItems = new List<REQUEST_ITEM_DETAIL>();
@@ -83,79 +107,190 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(RequestItemHeaderViewModel obj)
         {
-            var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
-            ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
-            var error = ModelState.Values.SelectMany(z=>z.Errors);
-            if (ModelState.IsValid)
-            {                
-                if (obj.REQUEST_ITEM_HEADER.ID == 0)
+            try
+            {
+                var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
+                ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
+
+                if (obj.REQUEST_ITEM_HEADER.PROJECT_NAME == null)
                 {
-                    obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
-                    _unitOfWork.RequestItemHeader.Add(obj.REQUEST_ITEM_HEADER);
-                    TempData["Success"] = "Simpan Permintaan Barang";
-                    foreach (var AddItems in AddListItems)
-                    {
-                        ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ITEMS.ID);
-                        REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
-                        {
-                            ITEM_NAME = AddItems.ITEM_NAME,
-                            CATEGORY = AddItems.CATEGORY,
-                            PIECE = AddItems.PIECE,
-                            STOCK = AddItems.STOCK,
-                            QTY = AddItems.QTY,
-                            ITEMS = iTEMS,
-                            REQUEST_ITEM_HEADER = obj.REQUEST_ITEM_HEADER
-                        };
-
-                        _unitOfWork.RequestItemDetail.Add(detail);
-                    }
+                    TempData["error"] = "Nama Project Harus diisi!";
                 }
-                else
+
+                var error = ModelState.Values.SelectMany(z => z.Errors);
+                if (ModelState.IsValid)
                 {
-                    obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
-                    _unitOfWork.RequestItemHeader.Update(obj.REQUEST_ITEM_HEADER);              
+                    var claimsIdentity = (ClaimsIdentity)User.Identity;
+                    var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+                    var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 0).FirstOrDefault();
+                    int rowItem = 1;
 
-                    IEnumerable<REQUEST_ITEM_DETAIL> detailItemList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == obj.REQUEST_ITEM_HEADER.ID);
-                    _unitOfWork.RequestItemDetail.RemoveRange(detailItemList);
-
-                    REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.Get(obj.REQUEST_ITEM_HEADER.ID);
-                    foreach (var AddItems in AddListItems)
+                    if (obj.REQUEST_ITEM_HEADER.ID == 0)
                     {
-                        ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ITEMS.ID);
-                        REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
+                        long RowNUmber = 1;
+                        List <REQUEST_ITEM_HEADER> ListHeader = _unitOfWork.RequestItemHeader.GetAll().ToList();
+                        if (ListHeader.Count > 0)
+                            RowNUmber = ListHeader.Max(z => z.ROW_NUMBER) + 1;
+                        string RONumber = "RO" + DateTime.Now.ToString("yyMM") + "-" + (RowNUmber.ToString().PadLeft(5, '0'));
+
+                        obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
+                        obj.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO = RONumber;
+                        obj.REQUEST_ITEM_HEADER.ROW_NUMBER = RowNUmber;
+                        obj.REQUEST_ITEM_HEADER.CREATE_BY = user.UserName;
+                        obj.REQUEST_ITEM_HEADER.CREATE_DATE = DateTime.Now;
+                        obj.REQUEST_ITEM_HEADER.STATUS_ID = status?.INUM1;
+                        obj.REQUEST_ITEM_HEADER.STATUS = status?.TEXT1;
+
+                        _unitOfWork.RequestItemHeader.Add(obj.REQUEST_ITEM_HEADER);
+                        TempData["Success"] = "Simpan Permintaan Barang";
+                        foreach (var AddItems in AddListItems)
                         {
-                            ITEM_NAME = AddItems.ITEM_NAME,
-                            CATEGORY = AddItems.CATEGORY,
-                            PIECE = AddItems.PIECE,
-                            STOCK = AddItems.STOCK,
-                            QTY = AddItems.QTY,
-                            ITEMS = iTEMS,
-                            REQUEST_ITEM_HEADER = rEQUEST_ITEM_HEADER
+                            ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ITEMS.ID);
+                            REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
+                            {
+                                ITEM_NAME = AddItems.ITEM_NAME,
+                                CATEGORY = AddItems.CATEGORY,
+                                PIECE = AddItems.PIECE,
+                                STOCK = AddItems.STOCK,
+                                QTY = AddItems.QTY,
+                                ITEMS = iTEMS,
+                                REQUEST_ITEM_HEADER = obj.REQUEST_ITEM_HEADER,
+                                ID = AddItems.ID,
+                                ROW_NUMBER = rowItem
+                            };
+
+                            _unitOfWork.RequestItemDetail.Add(detail);
+                            _unitOfWork.Save();
+                            rowItem++;
+
+                            AuditTrailInfo auditTrailInfoDetail = new()
+                            {
+                                UserName = user.Name,
+                                ModuleName = "RequestItems/Upsert",
+                                TransactionId = detail.ID,
+                                ActionName = status?.TEXT1 ?? string.Empty,
+                                OtherInfo = string.Empty,
+                                AuditTrailType = status?.INUM1 ?? 0,
+                                ApplicationId = user.Id,
+                                AuditTrailId = Guid.Empty
+                            };
+                            SaveAuditTrail(auditTrailInfoDetail);
+                        }
+                        AuditTrailInfo auditTrailInfo = new()
+                        {
+                            UserName = user.Name,
+                            ModuleName = "RequestItems/Upsert",
+                            TransactionId = obj.REQUEST_ITEM_HEADER.ID,
+                            ActionName = status?.TEXT1 ?? string.Empty,
+                            OtherInfo = string.Empty,
+                            AuditTrailType = status?.INUM1 ?? 0,
+                            ApplicationId = user.Id,
+                            AuditTrailId = Guid.Empty
                         };
-
-                        _unitOfWork.RequestItemDetail.Add(detail);
+                        SaveAuditTrail(auditTrailInfo);
                     }
+                    else
+                    {
+                        obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
+                        _unitOfWork.RequestItemHeader.Update(obj.REQUEST_ITEM_HEADER);
 
-                    TempData["Success"] = "Update Permintaan Barang";
-                    
+                        IEnumerable<REQUEST_ITEM_DETAIL> detailItemList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == obj.REQUEST_ITEM_HEADER.ID);
+                        _unitOfWork.RequestItemDetail.RemoveRange(detailItemList);
+
+                        REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.Get(obj.REQUEST_ITEM_HEADER.ID);
+                        foreach (var AddItems in AddListItems)
+                        {
+                            ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ITEMS.ID);
+                            REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
+                            {
+                                ITEM_NAME = AddItems.ITEM_NAME,
+                                CATEGORY = AddItems.CATEGORY,
+                                PIECE = AddItems.PIECE,
+                                STOCK = AddItems.STOCK,
+                                QTY = AddItems.QTY,
+                                ITEMS = iTEMS,
+                                REQUEST_ITEM_HEADER = rEQUEST_ITEM_HEADER,
+                                ID = AddItems.ID,
+                                ROW_NUMBER = rowItem
+                            };
+
+                            _unitOfWork.RequestItemDetail.Add(detail);
+                            _unitOfWork.Save();
+                            rowItem++;
+
+                            AuditTrailInfo auditTrailInfoDetail = new()
+                            {
+                                UserName = user.Name,
+                                ModuleName = "RequestItems/Upsert",
+                                TransactionId = detail.ID,
+                                ActionName = status?.TEXT1 ?? string.Empty,
+                                OtherInfo = string.Empty,
+                                AuditTrailType = status?.INUM1 ?? 0,
+                                ApplicationId = user.Id,
+                                AuditTrailId = Guid.Empty
+                            };
+                            SaveAuditTrail(auditTrailInfoDetail);
+                        }
+                        AuditTrailInfo auditTrailInfo = new()
+                        {
+                            UserName = user.Name,
+                            ModuleName = "RequestItems/Upsert",
+                            TransactionId = obj.REQUEST_ITEM_HEADER.ID,
+                            ActionName = status?.TEXT1 ?? string.Empty,
+                            OtherInfo = string.Empty,
+                            AuditTrailType = status?.INUM1 ?? 0,
+                            ApplicationId = user.Id,
+                            AuditTrailId = Guid.Empty                            
+                        };
+                        SaveAuditTrail(auditTrailInfo);
+                        TempData["Success"] = "Update Permintaan Barang";
+
+                    }
+                    _unitOfWork.Save();
+                    return RedirectToAction(nameof(Upsert), new { id = obj.REQUEST_ITEM_HEADER.ID });
                 }
-                _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
+               
             }
+            catch (Exception ex)
+            {
+
+                string message = ex.Message;
+            }
+            
             return View(obj);
         }
         [HttpDelete]
         public IActionResult Delete(long id)
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == -1).FirstOrDefault();
+
             var objFromDb = _unitOfWork.RequestItemHeader.Get(id);
+            objFromDb.STATUS_ID = status?.INUM1;
+            objFromDb.STATUS = status?.TEXT1;
+           
             if (objFromDb == null)
             {
                 return Json(new { success = false, message = "Hapus Gagal" });
             }
-
-            _unitOfWork.RequestItemHeader.Remove(objFromDb);
+            _unitOfWork.RequestItemHeader.Update(objFromDb);
             _unitOfWork.Save();
 
+            AuditTrailInfo auditTrailInfo = new()
+            {
+                UserName = user.Name,
+                ModuleName = "RequestItems/Delete",
+                TransactionId = id,
+                ActionName = status?.TEXT1 ?? string.Empty,
+                OtherInfo = string.Empty,
+                AuditTrailType = status?.INUM1 ?? 0,
+                ApplicationId = user.Id,
+                AuditTrailId = Guid.Empty
+            };
+            SaveAuditTrail(auditTrailInfo);
             return Json(new { success = true, message = "Hapus Berhasil" });
         }
         public IActionResult ViewApproval(long? id)
@@ -321,6 +456,19 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                     requestItemDetail.COMPLETED_BY = user.UserName;
                     requestItemDetail.COMPLETED_DATE = DateTime.Now;
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+
+                    AuditTrailInfo auditTrailInfoDetail = new()
+                    {
+                        UserName = user.Name,
+                        ModuleName = "RequestItems/UpdateCompleted",
+                        TransactionId = requestItemDetail.ID,
+                        ActionName = status?.TEXT1 ?? string.Empty,
+                        OtherInfo = string.Empty,
+                        AuditTrailType = status?.INUM1 ?? 0,
+                        ApplicationId = user.Id,
+                        AuditTrailId = Guid.Empty
+                    };
+                    SaveAuditTrail(auditTrailInfoDetail);
                 }
                 _unitOfWork.Save();
 

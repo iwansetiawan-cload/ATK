@@ -40,5 +40,6 @@ namespace INVENTORYWeb.Models
         public string? COMPLETED_BY { get; set; }
         public DateTime? COMPLETED_DATE { get; set; }
         public string? COMPLETED_NOTES { get; set; }
+        public long ROW_NUMBER { get; set; }
     }
 }

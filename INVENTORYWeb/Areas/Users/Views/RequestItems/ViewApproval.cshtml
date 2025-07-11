@@ -9,13 +9,16 @@
     switch (status)
     {
         case "Approve":
-            status_label = "btn-success";
+            status_label = "label-success";
             break;
         case "Rejected":
-            status_label = "btn-danger";
+            status_label = "label-danger";
             break;
-        case "approval":
-            status_label = "btn-primary";
+        case "Approval":
+            status_label = "label-primary";
+            break;
+        case "Complete":
+            status_label = "label-info";
             break;
        
     }
@@ -63,7 +66,7 @@
                                     <div class="card-header">
                                         <h5>@title</h5>  
                                          <div class="dropdown-secondary dropdown f-right">
-                                            
+                                            <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="label label-primary">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                             @if (@status == "Approve")
                                             {
                                                 
@@ -185,6 +188,7 @@
                                 <div class="row text-center">
                                     <div class="col-sm-12 invoice-btn-group text-center">
                                         <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
+
                                     </div>
 
                                 </div>
