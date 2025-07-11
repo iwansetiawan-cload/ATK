@@ -12,5 +12,6 @@ namespace INVENTORYWeb.Models.ViewModels
         public REQUEST_ITEM_HEADER REQUEST_ITEM_HEADER { get; set; }
         public REQUEST_ITEM_DETAIL REQUEST_ITEM_DETAIL { get; set; }
         public List<REQUEST_ITEM_DETAIL>? ListItems { get; set; }
+        public int? GetIdTemp { get; set; }
     }
 }

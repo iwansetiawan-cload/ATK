@@ -15,6 +15,7 @@ using System.Data;
 using Mono.TextTemplating;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using static Azure.Core.HttpHeader;
+using Microsoft.IdentityModel.Tokens;
 
 namespace INVENTORYWeb.Areas.Admin.Controllers
 {
@@ -299,7 +300,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 SaveAuditTrail(auditTrailInfo);
 
                 TempData["Success"] = "Successfully Reject";
-                return Json(new { success = true, message = "Reject Successful" });
+                return Json(new { success = true, message = "Reject Successful", status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
             {
@@ -328,19 +329,17 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 requestItemDetail.REJECTED_NOTES = null;
                 _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
-                List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == requestItemDetail.HEADER_ID && z.STATUS_ID != status?.INUM1).ToList();
-                if (requestItemDetailList.Count == 0)
-                {
-                    REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
-                    requestItemHeader.STATUS_ID = status?.INUM1;
-                    requestItemHeader.STATUS = status?.TEXT1;
-                    requestItemHeader.APPROVE_BY = user.UserName;
-                    requestItemHeader.APPROVE_DATE = DateTime.Now;
-                    requestItemHeader.REJECTED_BY = null;
-                    requestItemHeader.REJECTED_DATE = null;
-                    requestItemHeader.REJECTED_NOTES = null;
-                    _unitOfWork.RequestItemHeader.Update(requestItemHeader);
-                }
+                #region Update Header
+                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
+                requestItemHeader.STATUS_ID = status?.INUM1;
+                requestItemHeader.STATUS = status?.TEXT1;
+                requestItemHeader.APPROVE_BY = user.UserName;
+                requestItemHeader.APPROVE_DATE = DateTime.Now;
+                requestItemHeader.REJECTED_BY = null;
+                requestItemHeader.REJECTED_DATE = null;
+                requestItemHeader.REJECTED_NOTES = null;
+                _unitOfWork.RequestItemHeader.Update(requestItemHeader);
+                #endregion
 
                 _unitOfWork.Save();
                 AuditTrailInfo auditTrailInfo = new()
@@ -355,8 +354,9 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     AuditTrailId = Guid.Empty
                 };
                 SaveAuditTrail(auditTrailInfo);
+               
                 TempData["Success"] = "Successfully approved";
-                return Json(new { success = true, message = "Approved Successful" });
+                return Json(new { success = true, message = "Approved Successful", status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
             {
@@ -385,7 +385,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 requestItemDetail.APPROVE_DATE = null;
                 _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
-                List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == requestItemDetail.HEADER_ID && z.STATUS_ID != status?.INUM1).ToList();
+                List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == requestItemDetail.HEADER_ID && z.STATUS_ID == 1).ToList();
                 if (requestItemDetailList.Count == 0)
                 {
                     REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
@@ -412,7 +412,10 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 };
                 SaveAuditTrail(auditTrailInfo);
                 TempData["Success"] = "Successfully Reject";
-                return Json(new { success = true, message = "Reject Successful" });
+                if (requestItemDetailList.Count == 0)
+                    return Json(new { success = true, message = "Reject Successful", status = status?.TEXT1 ?? string.Empty });
+                else
+                    return Json(new { success = true, message = "Reject Successful" , status  = ""});
             }
             catch (Exception)
             {
@@ -524,7 +527,48 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             return Json(new { data = datalist });
 
         }
+        [HttpPost]
+        public IActionResult AddAdjustItem(long id, int? qty, string notes)
+        {
+            try
+            {
+                if (qty == null)
+                {
+                    TempData["Failed"] = "Error Simpan";
+                    return Json(new { success = false, message = "Qty harus diisi" });
+                }
+                if (string.IsNullOrEmpty(notes))
+                {
+                    TempData["Failed"] = "Error Simpan";
+                    return Json(new { success = false, message = "Keterangan harus diisi" });
+                }
 
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+                var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 1).FirstOrDefault();
+
+                REQUEST_ITEM_DETAIL requestItemDetail = _unitOfWork.RequestItemDetail.Get(id);
+                requestItemDetail.STATUS_ID = status?.INUM1;
+                requestItemDetail.STATUS = status?.TEXT1;
+                requestItemDetail.APPROVE_BY = user.UserName;
+                requestItemDetail.APPROVE_DATE = DateTime.Now;
+                requestItemDetail.REJECTED_BY = null;
+                requestItemDetail.REJECTED_DATE = null;
+                requestItemDetail.REJECTED_NOTES = null;
+                _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+                _unitOfWork.Save();
+                TempData["Success"] = "Simpan Berhasil";        
+                return Json(new { success = true, message = "Data Adjust disimpan" });
+
+            }
+            catch (Exception)
+            {
+                TempData["Failed"] = "Error Simpan";
+                return Json(new { success = false, message = "Data Adjust Error" });
+            }
+
+        }
     }
 }
 

@@ -55,7 +55,7 @@
                     <form method="post">
                         <div class="row">
                             <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />
-                            @*       <input type="hidden" asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" id="TotalQty" /> *@
+                            <input type="hidden" asp-for="GetIdTemp" />
                             @if (Model.REQUEST_ITEM_HEADER.ID != 0)
                             {
                                 title = "Approval";
@@ -71,17 +71,18 @@
                                         <div class="nav-item nav-grid">
                                             <div class="tool-box">
                                                 <div class="dropdown-secondary dropdown f-right">
-                                                    <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="text-inverse">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
+                                                    <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="text-inverse" style="font-weight: bold">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                                     <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                                         <a class="dropdown-item waves-light waves-effect" onclick=ApproveHeader($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Approve</a>
                                                         <a class="dropdown-item waves-light waves-effect" onclick=RejectHeader($('#IdHeader').val())><i class="icofont icofont-close-circled"></i> Reject</a>
                                                         <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
                                                     </div>                                                   
-                                                    <span class="f-left m-r-5 text-inverse">Status : <strong class="@status_label"> @Model.REQUEST_ITEM_HEADER.STATUS &nbsp;&nbsp;</strong></span>
-                                                   @*   <span class="f-left m-r-5 text-inverse">Status : 
-                                                          <input asp-for="REQUEST_ITEM_HEADER.STATUS" class="form-control @status_label"  id="curent_status" />
-                                                     </span> *@
+                                                    <span class="f-left m-r-5 text-inverse">Status :
+                                                        @* <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly /> *@
+                                                        <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />
+                                                    </span>                                                   
+                                               
                                                     
                                                 </div>
                                                
@@ -90,13 +91,8 @@
                                         </div>                              
 
                                     </div>
-                                    <div class="card-block">
-                              
-                                        @* <div id="toolbar-options" class="hidden">
-                                            <a href="#" title="approve"><i class="fa fa-check"></i></a>
-                                            <a href="#" title="cancel"><i class="fa fa-close"></i></a>
-                                           
-                                        </div> *@
+                                    <div class="card-block">                              
+                                      
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="form-group row pt-2">
@@ -268,7 +264,7 @@
 
     </div>
 </div>
-
+<div class="md-overlay"></div>
  <div class="md-modal md-effect-13 addcontact" id="modal-13">
     <div class="md-content">
     @*     <h3 class="f-20">History Approval</h3>
@@ -310,42 +306,6 @@
     </div>
 </div>
 
-<div class="md-overlay"></div>
-<!-- Modal -->@* 
-<div class="modal fade" id="lookupHostory">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="lookupProjectLabel">History Approval</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="card">
-
-                    <div class="card-block">
-                        <div class="dt-responsive table-responsive">
-                            <table id="tblDataHistory" class="table table-striped table-bordered nowrap" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Status</th>
-                                        <th>Entry By</th>
-                                        <th>Entry Date</th>
-                                    </tr>
-                                </thead>
-
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div> *@
-
 <div class="modal fade" id="lookupHostory" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -377,6 +337,45 @@
                 </div>
             </div>
            
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="lookupAdjust" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+      
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Adjust Qty Input</h5>
+                    </div>
+                    <div class="card-block">
+                        <form class="form-material">
+                            
+                            <div class="form-group form-default">
+                                <input type="number" id="GetQty" class="form-control" required="" maxlength="6">
+                                <span class="form-bar"></span>
+                                <label class="float-label">Qty</label>
+                            </div>
+                            <div class="form-group form-default">
+                                <textarea class="form-control" required="" id="GetNotes"></textarea>
+                                <span class="form-bar"></span>
+                                <label class="float-label">Keterangan</label>
+                            </div>
+                        </form>
+                    </div>
+                   
+                                       
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-12 invoice-btn-group text-center">
+                    <button type="submit" class="btn btn-primary btn-print-invoice m-b-30 btn-sm waves-effect waves-light m-r-20" onclick="SimpanDataAdjust()"><i class="icofont icofont-save"></i>Simpan</button>
+                    <button type="button" class="btn btn-danger waves-effect m-b-30 btn-sm waves-light" data-dismiss="modal"><i class="icofont icofont-ui-close"></i>Batal</button>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
@@ -417,7 +416,7 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                     <a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("${data}")><i class="icofont icofont-check-circled"></i> Approve</a>
                                     <a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("${data}")><i class="icofont icofont-close-circled"></i> Reject</a>
-                                    <a class="dropdown-item waves-light waves-effect" onclick=AdjustDetail("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
+                                    <a class="dropdown-item waves-light waves-effect" data-toggle="modal" data-target="#lookupAdjust" onclick=GetIdItem("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
                                     <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("${data}") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>     
                                 </div>
                             </div>
@@ -507,7 +506,7 @@
                         success: function (data) {
                             if (data.success) {
                                 swal("Reject!", data.message, "success");
-
+                                $("#curent_status").val(data.status);
                             }
                             else {
                                 swal("Reject!", data.message, "error");
@@ -517,38 +516,6 @@
                         }
                     });
 		    });
-         
-            // var url = "/Admin/RequestApproval/RejectHeader" ;
-            // swal({
-            //     title: "Are you sure you want to Reject?",
-            //     // text: "Anda tidak akan dapat memulihkan data!",
-            //     type: "warning",
-            //     showCancelButton: true,
-            //     confirmButtonClass: "btn-danger",
-            //     confirmButtonText: "Reject",
-            //     closeOnConfirm: false
-            // },
-            //     function () {
-            //         $.ajax({
-            //             type: "DELETE",
-            //             url: url,
-            //             data: {
-            //                 "id": id,
-            //                 "notes": $("#rejectHeader_note").val()
-            //             },
-            //             success: function (data) {
-            //                 if (data.success) {
-            //                     swal("Reject!", data.message, "success");
-
-            //                 }
-            //                 else {
-            //                     swal("Reject!", data.message, "error");
-            //                 }
-            //                 $("#rejectHeader_note").val('');
-            //                 dataTable.ajax.reload();
-            //             }
-            //         });
-            //     });
 
         }
         function ApproveDetail(id) {
@@ -566,7 +533,7 @@
                         success: function (data) {
                             if (data.success) {
                                 swal("Approve!", data.message, "success");
-
+                                $("#curent_status").val(data.status);
                             }
                             else {
                                 swal("Approve!", data.message, "error");
@@ -602,7 +569,9 @@
                         success: function (data) {
                             if (data.success) {
                                 swal("Reject!", data.message, "success");
-
+                                if (data.status != '') {
+                                    $("#curent_status").val(data.status);
+                                }
                             }
                             else {
                                 swal("Reject!", data.message, "error");
@@ -614,44 +583,47 @@
 		    });
 
         }
-        function AdjustDetail(id) {
 
-            var url = "/Admin/RequestApproval/RejectDetail";
-            swal({
-			title: "Apakah anda ingin merubah jumlah permintaan?",
-			text: "Keterangan  :",
-			type: "input",
-			showCancelButton: true,
-			closeOnConfirm: false,
-			inputPlaceholder: "isi keterangan penolakan"
-		    }, function (inputValue) {
-			    if (inputValue === false) return false;
-			    if (inputValue === "") {
-				    swal.showInputError("Keterangan harus diisi!");
-				    return false
-			    }
-			     $.ajax({
-                        type: "DELETE",
-                        url: url,
-                        data: {
-                            "id": id,
-                            "notes": inputValue
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Reject!", data.message, "success");
-
-                            }
-                            else {
-                                swal("Reject!", data.message, "error");
-                            }
-                            // $("#rejectHeader_note").val('');
-                            dataTable.ajax.reload();
-                        }
-                    });
-		    });
-
+        function GetIdItem(id) {
+          $("#GetIdTemp").val(id);
         }
+
+        function SimpanDataAdjust() {
+            var url = "/Admin/RequestApproval/AddAdjustItem";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    "id": $("#GetIdTemp").val(),
+                    "qty": $("#GetQty").val(),
+                    "notes": $("#GetNotes").val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Simpan Berhasil ',
+                            text: data.message,
+                            icon: 'icofont icofont-info-circle',
+                            type: 'success'
+                        });
+                        $("#GetIdTemp").val('');
+                        $("#GetQty").val('');
+                        $("#GetNotes").val('');
+
+                    } else {
+                        new PNotify({
+                            title: 'Error Simpan ',
+                            text: data.message,
+                            icon: 'icofont icofont-info-circle',
+                            type: 'error'
+                        });
+                    }
+
+                }
+            });
+        }
+
+
     </script>
 
 }

@@ -6,10 +6,12 @@ $(document).ready(function () {
 
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
+        "order": [[0, "desc"]],
         "ajax": {
             "url": "/Users/RequestItems/GetAll"
         },
         "columns": [
+            { "data": "transaction_number", "autoWidth": true },
             { "data": "project_name", "autoWidth": true },
             { "data": "request_date", "autoWidth": true },
             { "data": "notes", "autoWidth": true },
@@ -38,12 +40,12 @@ function loadDataTable() {
             var href = "";
             if (data["status"] === 'Approve' || data["status"] === 'Rejected' || data["status"] === 'Complete') {
                 href += '<a href="/Users/RequestItems/ViewApproval/ ' + data["id"] + '" class="btn btn-info btn-mini b-none text-white" style="cursor:pointer"><i class="icofont icofont-eye m-0"></i> </a>';
-                $('td', row).eq(4).html(href);
+                $('td', row).eq(5).html(href);
             } else {
                 href += '<a href="/Users/RequestItems/Upsert/' + data["id"] + '" class="btn btn-primary btn-mini b-none" style="cursor:pointer" title="edit"><i class="fa fa-pencil-square-o m-0"></i></a>&nbsp;';
                 href += '<a onclick=Delete("/Users/RequestItems/Delete/' + data["id"] + '") class="btn btn-danger btn-mini b-none text-white" style="cursor:pointer" title="delete"><i class="fa fa-trash m-0"></i></a>';
                
-                $('td', row).eq(4).html(href);
+                $('td', row).eq(5).html(href);
             }
 
         }

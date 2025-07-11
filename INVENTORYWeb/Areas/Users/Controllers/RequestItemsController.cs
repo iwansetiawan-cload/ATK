@@ -156,7 +156,8 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                                 QTY = AddItems.QTY,
                                 ITEMS = iTEMS,
                                 REQUEST_ITEM_HEADER = obj.REQUEST_ITEM_HEADER,
-                                ID = AddItems.ID,
+                                STATUS = status?.TEXT1 ?? string.Empty,
+                                STATUS_ID = status?.INUM1 ?? 0,
                                 ROW_NUMBER = rowItem
                             };
 
@@ -211,7 +212,8 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                                 QTY = AddItems.QTY,
                                 ITEMS = iTEMS,
                                 REQUEST_ITEM_HEADER = rEQUEST_ITEM_HEADER,
-                                ID = AddItems.ID,
+                                STATUS = status?.TEXT1 ?? string.Empty,
+                                STATUS_ID = status?.INUM1 ?? 0,
                                 ROW_NUMBER = rowItem
                             };
 
@@ -231,19 +233,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                                 AuditTrailId = Guid.Empty
                             };
                             SaveAuditTrail(auditTrailInfoDetail);
-                        }
-                        AuditTrailInfo auditTrailInfo = new()
-                        {
-                            UserName = user.Name,
-                            ModuleName = "RequestItems/Upsert",
-                            TransactionId = obj.REQUEST_ITEM_HEADER.ID,
-                            ActionName = status?.TEXT1 ?? string.Empty,
-                            OtherInfo = string.Empty,
-                            AuditTrailType = status?.INUM1 ?? 0,
-                            ApplicationId = user.Id,
-                            AuditTrailId = Guid.Empty                            
-                        };
-                        SaveAuditTrail(auditTrailInfo);
+                        }                       
                         TempData["Success"] = "Update Permintaan Barang";
 
                     }
