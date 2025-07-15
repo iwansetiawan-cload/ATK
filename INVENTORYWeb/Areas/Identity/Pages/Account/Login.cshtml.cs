@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using INVENTORYWeb.DataAccess.Repository.IRepository;
+using INVENTORYWeb.Models;
+using INVENTORYWeb.Utility;
 
 namespace INVENTORYWeb.Areas.Identity.Pages.Account
 {
@@ -111,20 +113,26 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                bool isActive = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == Input.Name).Select(i => i.LockoutEnabled).FirstOrDefault();
+                ApplicationUser AppUsers = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == Input.Name).FirstOrDefault();
 
-                if (!isActive)
-                {
-                    TempData["errorLogin"] = "User name anda sudah tidak aktif.";
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                if (AppUsers != null) {
+                    bool isActive = AppUsers.LockoutEnabled;
+                    if (!isActive)
+                    {
+                        TempData["errorLogin"] = "User name anda sudah tidak aktif.";
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
                 }
+               
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Name, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    if (AppUsers.RolesName == OI.Role_User)
+                        returnUrl = Url.Content("~/Users/Home/");
                     return LocalRedirect(returnUrl);
 
                 }

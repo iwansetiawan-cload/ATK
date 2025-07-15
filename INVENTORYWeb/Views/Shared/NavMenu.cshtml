@@ -75,8 +75,8 @@
         {         
 
             <ul class="pcoded-item pcoded-left-item">
-                <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/"? "active":"" )">
-                    <a asp-area="Users" asp-controller="Home" asp-action="" class="waves-effect waves-dark">
+                <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/Home" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/Home/RequestItemsList" ? "active":"" )">
+                    <a asp-area="Users" asp-controller="Home" asp-action="RequestItemsList" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-home"></i></span>
                         <span class="pcoded-mtext">Home</span>
                         <span class="pcoded-mcaret"></span>
@@ -120,8 +120,8 @@
 
         <ul class="pcoded-item pcoded-left-item">
             <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert/" ||  Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert" ||
-                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ViewApproval/" ||
-                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/ReturItems/Upsert"
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ProcessApproval/" ||
+                Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/ViewApproval/%" 
                 ? "active pcoded-trigger":"" )">
                 <a href="javascript:void(0)" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
@@ -131,7 +131,7 @@
                 <ul class="pcoded-submenu">
                     @if (rolesName == OI.Role_User || rolesName == OI.Role_SuperAdmin)
                     {
-                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert" ? "active":"" )">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/ViewApproval/%" ? "active":"" )">
                             <a asp-area="Users" asp-controller="RequestItems" asp-action="Index" class="waves-effect waves-dark">
                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                 <span class="pcoded-mtext">Permintaan Barang</span>
@@ -148,7 +148,7 @@
                     }
                     @if (rolesName == OI.Role_Admin || rolesName == OI.Role_SuperAdmin)
                     {
-                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert/" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/Upsert" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ViewApproval/" ? "active":"" )">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/RequestApproval/ProcessApproval/" ? "active":"" )">
                             <a asp-area="Admin" asp-controller="RequestApproval" asp-action="Index" class="waves-effect waves-dark">
                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                 <span class="pcoded-mtext">Process Approval</span>

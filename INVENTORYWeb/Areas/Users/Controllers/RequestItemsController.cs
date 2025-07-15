@@ -115,7 +115,14 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 if (obj.REQUEST_ITEM_HEADER.PROJECT_NAME == null)
                 {
                     TempData["error"] = "Nama Project Harus diisi!";
+                    return View(obj);
                 }
+
+                if (AddListItems.ToList().Count == 0)
+                {
+                    TempData["error"] = "Item Harus diisi!";
+                    return View(obj);
+                }                    
 
                 var error = ModelState.Values.SelectMany(z => z.Errors);
                 if (ModelState.IsValid)
@@ -386,7 +393,8 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                                 qty = z.QTY,
                                 piece = z.PIECE,
                                 status = z.STATUS,
-                                notes = z.REJECTED_NOTES
+                                notes = z.REJECTED_NOTES,
+                                adjust = z.QTY_ADJUST,
                             }).ToList();
             return Json(new { data = datalist });
 

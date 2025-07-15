@@ -2,20 +2,20 @@
 
 @{
     // Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Tambah Data";
+    var title = "Data Permintaan Barang";
     var status = @Model.REQUEST_ITEM_HEADER.STATUS;
     var status_label = "";
 
     switch (status)
     {
-        case "Approve":
-            status_label = "label-success";
+        case "New Request":
+            status_label = "btn-primary";
             break;
         case "Rejected":
             status_label = "label-danger";
             break;
-        case "Approval":
-            status_label = "label-primary";
+        case "Approve":
+            status_label = "btn-success";
             break;
         case "Complete":
             status_label = "label-info";
@@ -57,8 +57,7 @@
                             <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />
                             @*       <input type="hidden" asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" id="TotalQty" /> *@
                             @if (Model.REQUEST_ITEM_HEADER.ID != 0)
-                            {
-                                title = "Edit Data";
+                            {                                
                                 <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />
                             }
                             <div class="col-sm-12">
@@ -69,6 +68,7 @@
                                             <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="label label-primary">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                             @if (@status == "Approve")
                                             {
+                                            
                                                 
                                                 <button class="btn @status_label btn-mini dropdown-toggle waves-effect waves-light" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@Model.REQUEST_ITEM_HEADER.STATUS</button>
                                                  <div class="dropdown-menu" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
@@ -163,11 +163,14 @@
                                                                     <th>
                                                                         Isi
                                                                     </th>
-                                                                    <th>
+                                                                    <th style="min-width:10px">
                                                                         Jumlah
                                                                     </th>
                                                                     <th>
                                                                         Status
+                                                                    </th>
+                                                                    <th style="min-width:10px">
+                                                                        Adjust
                                                                     </th>
                                                                     <th>
                                                                         Notes
@@ -255,15 +258,16 @@
                     { "data": "piece", "autoWidth": true },
                     { "data": "qty", "autoWidth": true },
                     { "data": "status", "autoWidth": true },
+                    { "data": "adjust", "autoWidth": true },
                     { "data": "notes", "autoWidth": true }
                 ],
                 "createdRow": function (row, data, index) {
                     $('td', row).eq(2).attr("style", "text-align: right");
                     $('td', row).eq(3).attr("style", "text-align: right");
+                    $('td', row).eq(5).attr("style", "text-align: right");
                     if (data[4] == "Approve") {
                         tr.addClass('success');
-                    }
-                    // $('td', row).eq(4).attr("style", "text-align: right");
+                    }                   
                 }
             });
         }

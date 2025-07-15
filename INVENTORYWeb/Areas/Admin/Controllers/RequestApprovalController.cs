@@ -60,98 +60,6 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
 
             return Json(new { data = allObj });
         }
-        public async Task<IActionResult> Upsert(long? id)
-        {
-            AddListItems = new List<REQUEST_ITEM_DETAIL>();
-            RequestItemHeaderViewModel vm = new()
-            {
-                REQUEST_ITEM_HEADER = new() {
-                    REQUEST_DATE = DateTime.Now,
-                },
-                REQUEST_ITEM_DETAIL = new(),
-            };
-            if (id == null || id == 0)
-            {
-                return View(vm);
-            }
-            else
-            {
-                vm.REQUEST_ITEM_HEADER =  _unitOfWork.RequestItemHeader.Get(id);
-                vm.ListItems = _unitOfWork.RequestItemDetail.GetAll(includeProperties : "ITEMS").Where(z=>z.HEADER_ID == id).ToList();
-
-                foreach (var item in vm.ListItems)
-                {
-                    AddListItems.Add(item);
-                }
-
-                return View(vm);
-            }
-
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(RequestItemHeaderViewModel obj)
-        {
-
-            var error = ModelState.Values.SelectMany(z=>z.Errors);
-            if (ModelState.IsValid)
-            {                
-                if (obj.REQUEST_ITEM_HEADER.ID == 0)
-                {
-                    obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
-                    _unitOfWork.RequestItemHeader.Add(obj.REQUEST_ITEM_HEADER);
-                    TempData["Success"] = "Simpan Permintaan Barang";
-                    foreach (var AddItems in AddListItems)
-                    {
-                        ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ID);
-                        REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
-                        {
-                            ITEM_NAME = AddItems.ITEM_NAME,
-                            CATEGORY = AddItems.CATEGORY,
-                            PIECE = AddItems.PIECE,
-                            QTY = AddItems.QTY,
-                            ITEMS = iTEMS,
-                            REQUEST_ITEM_HEADER = obj.REQUEST_ITEM_HEADER
-                        };
-
-                        _unitOfWork.RequestItemDetail.Add(detail);
-                    }
-                }
-                else
-                {
-                    obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
-                    _unitOfWork.RequestItemHeader.Update(obj.REQUEST_ITEM_HEADER);
-                    //_unitOfWork.Save();
-
-                    IEnumerable<REQUEST_ITEM_DETAIL> detailItemList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == obj.REQUEST_ITEM_HEADER.ID);
-                    _unitOfWork.RequestItemDetail.RemoveRange(detailItemList);
-
-                    REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.Get(obj.REQUEST_ITEM_HEADER.ID);
-                    foreach (var AddItems in AddListItems)
-                    {
-                        ITEMS iTEMS = await _unitOfWork.Items.GetAsync(AddItems.ITEMS.ID);
-                        REQUEST_ITEM_DETAIL detail = new REQUEST_ITEM_DETAIL()
-                        {
-                            ITEM_NAME = AddItems.ITEM_NAME,
-                            CATEGORY = AddItems.CATEGORY,
-                            PIECE = AddItems.PIECE,
-                            QTY = AddItems.QTY,
-                            ITEMS = iTEMS,
-                            REQUEST_ITEM_HEADER = rEQUEST_ITEM_HEADER
-                        };
-
-                        _unitOfWork.RequestItemDetail.Add(detail);
-                    }                   
-
-                    TempData["Success"] = "Update Permintaan Barang";
-                    
-                }
-                _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(obj);
-        }
-        
        
         [HttpGet]
         public IActionResult GetAllItems(int id)
@@ -166,11 +74,11 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                                 piece = z.PIECE,
                                 status = z.STATUS,
                                 notes = z.REJECTED_NOTES,
+                                adjust = z.QTY_ADJUST,
                             }).ToList();
             return Json(new { data = datalist });
 
         }
-
         [HttpPost]
         public IActionResult ApproveHeader(long id)
         {
@@ -201,6 +109,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     requestItemDetail.REJECTED_BY = null;
                     requestItemDetail.REJECTED_DATE = null;
                     requestItemDetail.REJECTED_NOTES = null;
+                    requestItemDetail.QTY_ADJUST = null;
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
                     AuditTrailInfo auditTrailInfoDetail = new()
@@ -269,6 +178,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     requestItemDetail.REJECTED_NOTES = notes;
                     requestItemDetail.APPROVE_BY = null;
                     requestItemDetail.APPROVE_DATE = null;
+                    requestItemDetail.QTY_ADJUST = null;
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
                     AuditTrailInfo auditTrailInfoDetail = new()
@@ -327,6 +237,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 requestItemDetail.REJECTED_BY = null;
                 requestItemDetail.REJECTED_DATE = null;
                 requestItemDetail.REJECTED_NOTES = null;
+                requestItemDetail.QTY_ADJUST = null;
                 _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
                 #region Update Header
@@ -383,6 +294,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 requestItemDetail.REJECTED_NOTES = notes;
                 requestItemDetail.APPROVE_BY = null;
                 requestItemDetail.APPROVE_DATE = null;
+                requestItemDetail.QTY_ADJUST = null;
                 _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
                 List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == requestItemDetail.HEADER_ID && z.STATUS_ID == 1).ToList();
@@ -424,7 +336,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             }
 
         }
-        public IActionResult ViewApproval(long? id)
+        public IActionResult ProcessApproval(long? id)
         {
             AddListItems = new List<REQUEST_ITEM_DETAIL>();
             RequestItemHeaderViewModel vm = new()
@@ -448,7 +360,6 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             }
 
         }
-
         [HttpPost]
         public async Task<IActionResult> AddItem(long? id, int? qty, int? stock)
         {
@@ -484,7 +395,6 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             };
             return Json(res);
         }
-
         private void SaveAuditTrail(AuditTrailInfo AuditTrailInfo)
         {
             try
@@ -556,10 +466,39 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 requestItemDetail.REJECTED_BY = null;
                 requestItemDetail.REJECTED_DATE = null;
                 requestItemDetail.REJECTED_NOTES = null;
+                requestItemDetail.QTY_ADJUST = qty;
+                requestItemDetail.REJECTED_NOTES = notes;
                 _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+
+                #region Update Header
+                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
+                requestItemHeader.STATUS_ID = status?.INUM1;
+                requestItemHeader.STATUS = status?.TEXT1;
+                requestItemHeader.APPROVE_BY = user.UserName;
+                requestItemHeader.APPROVE_DATE = DateTime.Now;
+                requestItemHeader.REJECTED_BY = null;
+                requestItemHeader.REJECTED_DATE = null;
+                requestItemHeader.REJECTED_NOTES = null;
+                _unitOfWork.RequestItemHeader.Update(requestItemHeader);
+                #endregion
+
                 _unitOfWork.Save();
+
+                AuditTrailInfo auditTrailInfo = new()
+                {
+                    UserName = user.Name,
+                    ModuleName = "RequestApproval/AddAdjustItem",
+                    TransactionId = id,
+                    ActionName = status?.TEXT1 ?? string.Empty,
+                    OtherInfo = notes,
+                    AuditTrailType = status?.INUM1 ?? 0,
+                    ApplicationId = user.Id,
+                    AuditTrailId = Guid.Empty
+                };
+                SaveAuditTrail(auditTrailInfo);
+
                 TempData["Success"] = "Simpan Berhasil";        
-                return Json(new { success = true, message = "Data Adjust disimpan" });
+                return Json(new { success = true, message = "Data Adjust disimpan", status = status?.TEXT1 ?? string.Empty });
 
             }
             catch (Exception)
@@ -568,6 +507,35 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Data Adjust Error" });
             }
 
+        }
+        [HttpGet]
+        public IActionResult ValApproveHeader(long id, string status)
+        {
+            REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(id);
+            if (requestItemHeader != null)
+            {
+                if (requestItemHeader.STATUS == status)
+                {
+                    TempData["Failed"] = "Error validation";
+                    return Json(new { success = true, message = "Status Ready " + status });
+                }
+            }
+            TempData["Failed"] = "Error validation";
+            return Json(new { success = false, message = "" });
+        }
+        [HttpGet]
+        public IActionResult ValApproveDetail(long id, string status)
+        {
+            REQUEST_ITEM_DETAIL requestItemDetail = _unitOfWork.RequestItemDetail.Get(id);
+            if (requestItemDetail != null) {
+                if (requestItemDetail.STATUS == status)
+                {
+                    TempData["Failed"] = "Error validation";
+                    return Json(new { success = true, message = "Status Ready " + status });
+                }
+            }
+            TempData["Failed"] = "Error validation";
+            return Json(new { success = false, message = "" });
         }
     }
 }

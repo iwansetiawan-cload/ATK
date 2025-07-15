@@ -2,26 +2,26 @@
 
 @{
     // Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Approval";
-    var status = @Model.REQUEST_ITEM_HEADER.STATUS;
-    var status_label = "";
+    var title = "Process Approval";
+    // var status = @Model.REQUEST_ITEM_HEADER.STATUS;
+    // var status_label = "";
 
-    switch (status)
-    {
-        case "New Request":
-            status_label = "label label-primary";
-            break;
-        case "Approve":
-            status_label = "label label-success";
-            break;
-        case "Rejected":
-            status_label = "label label-danger";
-            break;
-        case "Complete":
-            status_label = "label label-info";
-            break;
+    // switch (status)
+    // {
+    //     case "New Request":
+    //         status_label = "label label-primary";
+    //         break;
+    //     case "Approve":
+    //         status_label = "label label-success";
+    //         break;
+    //     case "Rejected":
+    //         status_label = "label label-danger";
+    //         break;
+    //     case "Complete":
+    //         status_label = "label label-info";
+    //         break;
        
-    }
+    // }
 }
 
 <div class="pcoded-content">
@@ -54,15 +54,15 @@
                 <div class="page-body">
                     <form method="post">
                         <div class="row">
-                            <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />
+                            <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />                            
                             <input type="hidden" asp-for="GetIdTemp" />
-                            @if (Model.REQUEST_ITEM_HEADER.ID != 0)
+
+                            @* @if (Model.REQUEST_ITEM_HEADER.ID != 0)
                             {
                                 title = "Approval";
-                                <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />
-                                
+                                <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />                                
 
-                            }
+                            } *@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -136,9 +136,10 @@
                                                     <div class="col-6">
                                                         <div class="form-group row">
 
-                                                            <label class="col-sm-3 col-form-label">Jumlah Permintaan</label>
+                                                            <label class="col-sm-3 col-form-label">Due Date</label>
                                                             <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" class="form-control" style="row-gap" asp-format="{0:#,###}" id="TOTAL_QTY" readonly />
+                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" />
+                                                                @* <input asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" class="form-control" style="row-gap" asp-format="{0:#,###}" id="TOTAL_QTY" readonly /> *@
                                                             </div>
                                                         </div>
 
@@ -175,11 +176,14 @@
                                                                     <th>
                                                                         Isi
                                                                     </th>
-                                                                    <th>
+                                                                    <th style="min-width:10px">
                                                                         Jumlah
                                                                     </th>
                                                                     <th>
                                                                         Status
+                                                                    </th>
+                                                                    <th style ="min-width:10px">
+                                                                        Adjust
                                                                     </th>
                                                                      <th>
                                                                         Notes
@@ -195,6 +199,28 @@
                                             </div>
                                         </div>
                                        
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table class="table table-responsive invoice-table invoice-total">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Jumlah Permintaan :</th>
+                                                            <td style="min-width:10px">@Model.REQUEST_ITEM_HEADER.TOTAL_QTY</td>
+                                                        </tr>
+                                                                                                             
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h6>Perhatian :</h6>
+                                                <p>Hanya Item yang berstatus Approve saja yang dapat diproses, apabila sudah diproses maka tidak bisa diproses kembali..! </p>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                   
                                 </div>
@@ -216,7 +242,7 @@
                         </div>
                     </form>
 
-                    <div class="md-modal md-effect-13 addcontact" id="modal-adjust">
+                   @*  <div class="md-modal md-effect-13 addcontact" id="modal-adjust">
                         <div class="md-content">
                             <h3 class="f-26">Keterangan</h3>
                             <div class="form-material">
@@ -235,8 +261,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="md-modal md-effect-13 addcontact" id="modal-detail">
+                    </div> *@
+                   @*  <div class="md-modal md-effect-13 addcontact" id="modal-detail">
                         <div class="md-content">
                             <h3 class="f-26">Keterangan</h3>
                             <div class="form-material">
@@ -256,7 +282,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="md-overlay"></div>
+                    <div class="md-overlay"></div> *@
 
                 </div>
             </div>
@@ -264,13 +290,9 @@
 
     </div>
 </div>
-<div class="md-overlay"></div>
- <div class="md-modal md-effect-13 addcontact" id="modal-13">
-    <div class="md-content">
-    @*     <h3 class="f-20">History Approval</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button> *@
+
+ @* <div class="md-modal md-effect-13 addcontact" id="modal-13">
+    <div class="md-content">   
         <div class="form-material">
             <div class="modal-header">
                 <h5 class="modal-title" id="lookupProjectLabel">Cari Data Project</h5>
@@ -304,7 +326,7 @@
        
         </div>
     </div>
-</div>
+</div> *@
 
 <div class="modal fade" id="lookupHostory" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
@@ -340,7 +362,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="lookupAdjust" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -380,6 +401,7 @@
     </div>
 </div>
 
+<div class="md-overlay"></div>
 @section Scripts {
   
 
@@ -405,7 +427,9 @@
                     { "data": "piece", "autoWidth": true },
                     { "data": "qty", "autoWidth": true },
                     { "data": "status", "autoWidth": true },
+                    { "data": "adjust", "autoWidth": true },
                     { "data": "notes", "autoWidth": true },
+                   
                     {
                         "data": "id",
                         "render": function (data) {
@@ -427,7 +451,8 @@
                 "createdRow": function (row, data, index) {
                     $('td', row).eq(2).attr("style", "text-align: right");
                     $('td', row).eq(3).attr("style", "text-align: right");
-
+                    $('td', row).eq(5).attr("style", "text-align: right");
+                    $(row).attr('data-dismiss', 'modal');
                 }
             });
         }    
@@ -456,131 +481,239 @@
         }
 
         function ApproveHeader(id) {
-            var url = "/Admin/RequestApproval/ApproveHeader/" + id;
-            swal({
-                title: "Apakah Anda yakin ingin Menyetujui?",
-                icon: "success",
-                showCancelButton: true,
-                reverseButtons: true
-            },
-                function () {
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Approve!", data.message, "success");
-                                $("#curent_status").val(data.status);
-                            }
-                            else {
-                                swal("Approve!", data.message, "error");
-                            }
-                            dataTable.ajax.reload();
-                        }
-                    });
-                });
+            var status = 'Approve';
+            var url = "/Admin/RequestApproval/ValApproveHeader";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    "id": id,
+                    "status": status
+                },
+                success: function (data) {
+                    
+                    if (data.success) {                      
+                        new PNotify({
+                            title: 'Informasi',
+                            text: data.message,
+                            icon: 'icofont icofont-info-square',
+                            type: 'info'
+                        });
+                      
+                    }
+                    else {
+                        var urls = "/Admin/RequestApproval/ApproveHeader/" + id;
+                        swal({
+                            title: "Apakah Anda yakin ingin Menyetujui?",
+                            icon: "success",
+                            showCancelButton: true,
+                            reverseButtons: true
+                        },
+                        function () {
+                            $.ajax({
+                                type: "POST",
+                                url: urls,
+                                success: function (data) {
+                                    if (data.success) {
+                                        swal("Approve!", data.message, "success");
+                                        $("#curent_status").val(data.status);
+                                    }
+                                    else {
+                                        swal("Approve!", data.message, "error");
+                                    }
+                                    dataTable.ajax.reload();
+                                }
+                            });
+                        });
+                    }
+                  
+                }
+            });
+
+
+            
         }
         function RejectHeader(id) {
+            var status = 'Rejected';
+            var url = "/Admin/RequestApproval/ValApproveHeader";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    "id": id,
+                    "status": status
+                },
+                success: function (data) {
+                    
+                    if (data.success) {                      
+                        new PNotify({
+                            title: 'Informasi',
+                            text: data.message,
+                            icon: 'icofont icofont-info-square',
+                            type: 'info'
+                        });
+                      
+                    }
+                    else {
+                        var urls = "/Admin/RequestApproval/RejectHeader";
+                        swal({
+                            title: "Apakah anda ingin membatalkan permintaan?",
+                            text: "Keterangan  :",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            inputPlaceholder: "keterangan harus diisi..."
+                        }, function (inputValue) {
+                            if (inputValue === false) return false;
+                            if (inputValue === "") {
+                                swal.showInputError("Keterangan harus diisi!");
+                                return false
+                            }
+                            $.ajax({
+                                type: "DELETE",
+                                url: urls,
+                                data: {
+                                    "id": id,
+                                    "notes": inputValue
+                                },
+                                success: function (data) {
+                                    if (data.success) {
+                                        swal("Reject!", data.message, "success");
+                                        $("#curent_status").val(data.status);
+                                    }
+                                    else {
+                                        swal("Reject!", data.message, "error");
+                                    }
+                                    // $("#rejectHeader_note").val('');
+                                    dataTable.ajax.reload();
+                                }
+                            });
+                        });
+                    }
+                  
+                }
+            });
 
-            var url = "/Admin/RequestApproval/RejectHeader";
-            swal({
-			title: "Apakah anda ingin membatalkan permintaan?",
-			text: "Keterangan  :",
-			type: "input",
-			showCancelButton: true,
-			closeOnConfirm: false,
-			inputPlaceholder: "isi keterangan penolakan"
-		    }, function (inputValue) {
-			    if (inputValue === false) return false;
-			    if (inputValue === "") {
-				    swal.showInputError("Keterangan harus diisi!");
-				    return false
-			    }
-			     $.ajax({
-                        type: "DELETE",
-                        url: url,
-                        data: {
-                            "id": id,
-                            "notes": inputValue
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Reject!", data.message, "success");
-                                $("#curent_status").val(data.status);
-                            }
-                            else {
-                                swal("Reject!", data.message, "error");
-                            }
-                            // $("#rejectHeader_note").val('');
-                            dataTable.ajax.reload();
-                        }
-                    });
-		    });
+
+            
 
         }
         function ApproveDetail(id) {
-            var url = "/Admin/RequestApproval/ApproveDetail/" + id;
-            swal({
-                title: "Apakah Anda yakin ingin Menyetujui?",
-                icon: "success",
-                showCancelButton: true,
-                reverseButtons: true
-            },
-                function () {
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Approve!", data.message, "success");
-                                $("#curent_status").val(data.status);
-                            }
-                            else {
-                                swal("Approve!", data.message, "error");
-                            }
-                            dataTable.ajax.reload();
-                        }
-                    });
-                });
+            var status = 'Approve';
+            var url = "/Admin/RequestApproval/ValApproveDetail";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    "id": id,
+                    "status": status
+                },
+                success: function (data) {
+                    
+                    if (data.success) {                      
+                        new PNotify({
+                            title: 'Informasi',
+                            text: data.message,
+                            icon: 'icofont icofont-info-square',
+                            type: 'info'
+                        });
+                      
+                    }
+                    else {
+                        var urls = "/Admin/RequestApproval/ApproveDetail/" + id;
+                        swal({
+                            title: "Apakah Anda yakin ingin Menyetujui?",
+                            icon: "success",
+                            showCancelButton: true,
+                            reverseButtons: true
+                        },
+                        function () {
+                            $.ajax({
+                                type: "POST",
+                                url: urls,
+                                success: function (data) {
+                                    if (data.success) {
+                                        swal("Approve!", data.message, "success");
+                                        $("#curent_status").val(data.status);
+                                    }
+                                    else {
+                                        swal("Approve!", data.message, "error");
+                                    }
+                                    dataTable.ajax.reload();
+                                }
+                            });
+                        });
+                    }
+                  
+                }
+            });
+
+
+            
         }
         function RejectDetail(id) {
 
-            var url = "/Admin/RequestApproval/RejectDetail";
-            swal({
-			title: "Apakah anda ingin membatalkan permintaan?",
-			text: "Keterangan  :",
-			type: "input",
-			showCancelButton: true,
-			closeOnConfirm: false,
-			inputPlaceholder: "isi keterangan penolakan"
-		    }, function (inputValue) {
-			    if (inputValue === false) return false;
-			    if (inputValue === "") {
-				    swal.showInputError("Keterangan harus diisi!");
-				    return false
-			    }
-			     $.ajax({
-                        type: "DELETE",
-                        url: url,
-                        data: {
-                            "id": id,
-                            "notes": inputValue
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Reject!", data.message, "success");
-                                if (data.status != '') {
-                                    $("#curent_status").val(data.status);
+            var status = 'Rejected';
+            var url = "/Admin/RequestApproval/ValApproveDetail";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    "id": id,
+                    "status": status
+                },
+                success: function (data) {
+                    
+                    if (data.success) {                      
+                        new PNotify({
+                            title: 'Informasi',
+                            text: data.message,
+                            icon: 'icofont icofont-info-square',
+                            type: 'info'
+                        });
+                      
+                    }
+                    else {
+                        var urls = "/Admin/RequestApproval/RejectDetail";
+                        swal({
+                            title: "Apakah anda ingin membatalkan permintaan?",
+                            text: "Keterangan  :",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            inputPlaceholder: "keterangan harus diisi..."
+                        }, function (inputValue) {
+                            if (inputValue === false) return false;
+                            if (inputValue === "") {
+                                swal.showInputError("Keterangan harus diisi!");
+                                return false
+                            }
+                            $.ajax({
+                                type: "DELETE",
+                                url: urls,
+                                data: {
+                                    "id": id,
+                                    "notes": inputValue
+                                },
+                                success: function (data) {
+                                    if (data.success) {
+                                        swal("Reject!", data.message, "success");
+                                        if (data.status != '') {
+                                            $("#curent_status").val(data.status);
+                                        }
+                                    }
+                                    else {
+                                        swal("Reject!", data.message, "error");
+                                    }
+                                    // $("#rejectHeader_note").val('');
+                                    dataTable.ajax.reload();
                                 }
-                            }
-                            else {
-                                swal("Reject!", data.message, "error");
-                            }
-                            // $("#rejectHeader_note").val('');
-                            dataTable.ajax.reload();
-                        }
-                    });
-		    });
+                            });
+                        });
+                    }
+                  
+                }
+            });
 
         }
 
@@ -606,9 +739,12 @@
                             icon: 'icofont icofont-info-circle',
                             type: 'success'
                         });
+                        $("#curent_status").val(data.status);
                         $("#GetIdTemp").val('');
                         $("#GetQty").val('');
-                        $("#GetNotes").val('');
+                        $("#GetNotes").val('');                       
+                        $('#lookupAdjust').modal('hide');
+                        dataTable.ajax.reload();
 
                     } else {
                         new PNotify({
@@ -623,7 +759,7 @@
             });
         }
 
-
+        
     </script>
 
 }

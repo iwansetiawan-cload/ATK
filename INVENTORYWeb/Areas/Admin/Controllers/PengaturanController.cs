@@ -79,6 +79,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 await _userManager.AddToRoleAsync(oldUser, newRoleId.Name);
                 oldUser.Role = applicationUser.Role;
                 oldUser.RolesName = newRoleId.Name;
+                oldUser.LockoutEnabled = applicationUser.LockoutEnabled;
                 _unitOfWork.ApplicationUser.Update(oldUser);
                 _unitOfWork.Save();
                 TempData["success"] = "User Berhasil Diupdate";

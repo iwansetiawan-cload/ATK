@@ -32,11 +32,35 @@
                                 <div class="card-header">
                                     <h5>List Permintaan Barang</h5>
                                     <div class="nav-item nav-grid">
+                                        <div class="tool-box">
+                                           
+                                       
+                                            <div class="nav-item nav-grid">
+                                              
+                                                <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10 f-left" asp-action="Upsert" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                                    <i class="icofont icofont-plus m-r-5"></i>
+                                                </a>
+                                               @*  <span class="m-r-15">View Mode: </span> *@
+                                             
+                                                <a type="button" class="btn btn-sm btn-primary waves-effect waves-light" asp-area="Users" asp-controller="Home" asp-action="RequestItemsList" data-toggle="tooltip" data-placement="top" title="list view">
+                                                    <i class="icofont icofont-listine-dots"></i>
+                                                </a>
+                                                <span class="f-left m-r-5 text-inverse">View Mode:  &nbsp;&nbsp;&nbsp</span>
+
+
+                                            </div>
+                                           
+                                        
+                                        </div>
+
+                                    </div>
+                                 @*    <div class="nav-item nav-grid">
                                         <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10" asp-action="Upsert" data-toggle="tooltip" data-placement="top" title="tambah data">
                                             <i class="icofont icofont-plus m-r-5"></i>
                                         </a>
-
-                                    </div>
+                                     
+                                      
+                                    </div> *@
 
                                 </div>
                                 <div class="card-block">

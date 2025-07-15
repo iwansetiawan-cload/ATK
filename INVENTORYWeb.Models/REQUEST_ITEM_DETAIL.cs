@@ -29,7 +29,6 @@ namespace INVENTORYWeb.Models
         public int? STOCK { get; set; }
         public int? QTY { get; set; }
         public int? QTY_ADJUST { get; set; }
-        public string? REMARK_ADJUST { get; set; }
         public int? STATUS_ID { get; set; }
         public string? STATUS { get; set; }
         public string? APPROVE_BY { get; set; }

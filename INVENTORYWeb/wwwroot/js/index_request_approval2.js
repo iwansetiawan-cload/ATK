@@ -35,7 +35,7 @@ function loadDataTable(url) {
                     return `
                             <div class="text-center">
                                
-                                <a href="/Admin/RequestApproval/ViewApproval/${data}" class="btn btn-info btn-mini b-none text-white" style="cursor:pointer">
+                                <a href="/Admin/RequestApproval/ProcessApproval/${data}" class="btn btn-info btn-mini b-none text-white" style="cursor:pointer">
                                     <i class="icofont icofont-eye m-0"></i>
                                 </a>
                             </div>

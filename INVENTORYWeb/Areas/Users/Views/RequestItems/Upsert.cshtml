@@ -181,6 +181,24 @@
                                                 </table>
                                             </div>
 
+                              @*               <div class="row">
+                                                <div class="col-sm-12">
+                                                    <table class="table table-responsive invoice-table invoice-total">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Jumlah Permintaan :</th>
+                                                                <td style="min-width:10px">
+                                                                    <input style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" id="TotalQty" disabled />                                                                   
+                                                                  </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div> *@
+
+                                         
+
                                             <div class="row text-right">
                                                 <div class="col-sm-8">
                                                 </div>
@@ -193,6 +211,12 @@
                                                     </div>                                                   
 
                                                 </div>                                               
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <h6>Perhatian :</h6>
+                                                    <p>Permintaan barang hanya bisa dilakukan satu bulan sekali dan pastikan barang yang di order sudah sesuai..! </p>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -493,6 +517,57 @@
             }
 
         }
+
+        // function SaveData(id) {
+        //     var status = 'Approve';
+        //     var url = "/Admin/RequestApproval/ValApproveHeader";
+        //     $.ajax({
+        //         type: "GET",
+        //         url: url,
+        //         data: {
+        //             "id": id,
+        //             "status": status
+        //         },
+        //         success: function (data) {
+
+        //             if (data.success) {
+        //                 new PNotify({
+        //                     title: 'Informasi',
+        //                     text: data.message,
+        //                     icon: 'icofont icofont-info-square',
+        //                     type: 'info'
+        //                 });
+
+        //             }
+        //             else {
+        //                 var urls = "/Admin/RequestApproval/ApproveHeader/" + id;
+        //                 swal({
+        //                     title: "Apakah Anda yakin ingin Menyetujui?",
+        //                     icon: "success",
+        //                     showCancelButton: true,
+        //                     reverseButtons: true
+        //                 },
+        //                     function () {
+        //                         $.ajax({
+        //                             type: "POST",
+        //                             url: urls,
+        //                             success: function (data) {
+        //                                 if (data.success) {
+        //                                     swal("Approve!", data.message, "success");
+        //                                     $("#curent_status").val(data.status);
+        //                                 }
+        //                                 else {
+        //                                     swal("Approve!", data.message, "error");
+        //                                 }
+        //                                 dataTable.ajax.reload();
+        //                             }
+        //                         });
+        //                     });
+        //             }
+
+        //         }
+        //     });
+        // }
 
     </script>
 
