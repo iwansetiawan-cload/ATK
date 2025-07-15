@@ -244,9 +244,10 @@
 
         function loadDataItems() {
             var id = $('#IdHeader').val();
+            var url = "@Url.Action("GetAllItemsView", "RequestItems", new { Area = "Users" })";
             dataTable = $('#tblData').DataTable({
                 "ajax": {
-                    "url": "/Users/RequestItems/GetAllItemsView",
+                    "url": url,
                     "data": {
                         "id": id
                     }
@@ -272,8 +273,8 @@
             });
         }
 
-        function AddCompleted(id) {
-            var url = "/Users/RequestItems/UpdateCompleted/" + id;
+        function AddCompleted(id) {           
+            var url = "@Url.Action("UpdateCompleted", "RequestItems", new { Area = "Users" })";
             swal({
                 title: "Selesaikan Transaksi Anda!",
                 icon: "success",
@@ -284,6 +285,9 @@
                     $.ajax({
                         type: "POST",
                         url: url,
+                        data: {
+                            "id": id
+                        },
                         success: function (data) {
                             if (data.success) {
                                 swal("Completed!", data.message, "success");

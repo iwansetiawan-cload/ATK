@@ -165,7 +165,7 @@
         @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
         {
             <ul class="pcoded-item pcoded-left-item">
-                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" ? "active pcoded-trigger":"" )">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Laporan" ? "active pcoded-trigger":"" )">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="icofont icofont-copy-alt"></i><b>FC</b></span>
                         <span class="pcoded-mtext">Laporan</span>
@@ -173,7 +173,7 @@
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin" ? "active":"" )">
-                            <a asp-area="Admin" asp-controller="HonorMengajar" asp-action="Index" class="waves-effect waves-dark">
+                            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="waves-effect waves-dark">
                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                 <span class="pcoded-mtext">Permintaan Barang</span>
                                 <span class="pcoded-mcaret"></span>

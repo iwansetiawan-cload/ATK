@@ -344,9 +344,10 @@
         });       
 
         function loadDataMasterItem() {
+            var url = "@Url.Action("GetAllMasterItems", "RequestItems", new { Area = "Users" })";
             dataTable = $('#tblDataMasterItems').DataTable({
                 "ajax": {
-                    "url": "/Users/RequestItems/GetAllMasterItems",
+                    "url": url,
                     'method': "GET"
                 },
                 "columns": [
@@ -377,9 +378,10 @@
         }
 
         function loadDataMasterProject() {
+            var url = "@Url.Action("GetAllMasterProject", "RequestItems", new { Area = "Users" })";
             dataTable = $('#tblDataMasterProject').DataTable({
                 "ajax": {
-                    "url": "/Users/RequestItems/GetAllMasterProject",
+                    "url": url,
                     'method': "GET"
                 },
                 "columns": [
@@ -400,14 +402,13 @@
         }
 
         function addItem() {
-
             var id = $("#idItem").val();
             var stok = $("#stock").val();
             var qty = $("#quantity").val();
 
             if (id != "" && qty != "") {
                 var urls = "/Users/RequestItems/AddItem?id=" + id + "&qty=" + qty + "&stock=" + stok;
-
+              
                 try {
                     $.ajax({
                         url: urls,
@@ -444,18 +445,13 @@
 
         }
         function loadDataAddItems() {
-            // var id = $('#idItem').val();
-            // var idheader = $('#IdHeader').val();
+            var url = "@Url.Action("GetAllItems", "RequestItems", new { Area = "Users" })";
             var table = $('#tblData').DataTable();
             table.clear().draw();     
             table.destroy();
             table = $('#tblData').DataTable({              
                 "ajax": {
-                    "url": "/Users/RequestItems/GetAllItems"
-                    // "data": {
-                    //     "id": id,
-                    //     "idHeader": idheader
-                    // }
+                    "url": url                
                 },
                 "paging": false,
                 "searching": false,
@@ -488,11 +484,14 @@
         }
 
         function removeItem(id) {
-            var urls = "/Users/RequestItems/DeleteItem?id=" + id;
-
+            //var urls = "/Users/RequestItems/DeleteItem?id=" + id;
+            var url = "@Url.Action("DeleteItem", "RequestItems", new { Area = "Users" })";
             try {
                 $.ajax({
-                    url: urls,
+                    url: url,
+                    data: {
+                            "id": id
+                        },
                     dataType: 'json',
                     type: 'DELETE',
                     contentType: 'application/json;',
