@@ -1,5 +1,4 @@
 ﻿var dataTable;
-
 $(document).ready(function () {
     loadDataTable();
 });
@@ -38,7 +37,7 @@ function loadDataTable() {
         ],
         "createdRow": function (row, data, index) {
             var href = "";
-            if (data["status"] === 'Approve' || data["status"] === 'Rejected' || data["status"] === 'Complete') {
+            if (data["status"] === 'Approve' || data["status"] === 'Rejected' || data["status"] === 'Complete' || data["status"] === 'Process') {
                 href += '<a href="/Users/RequestItems/ViewApproval/ ' + data["id"] + '" class="btn btn-info btn-mini b-none text-white" style="cursor:pointer"><i class="icofont icofont-eye m-0"></i> </a>';
                 $('td', row).eq(5).html(href);
             } else {

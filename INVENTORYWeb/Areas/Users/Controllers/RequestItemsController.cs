@@ -90,7 +90,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             return Json(new { data = allObj });
         }
         public IActionResult Upsert(long? id)
-            {
+        {
             var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
             ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
             AddListItems = new List<REQUEST_ITEM_DETAIL>();
@@ -267,7 +267,6 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-
                 string message = ex.Message;
             }
             
@@ -304,8 +303,9 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 AuditTrailId = Guid.Empty
             };
             SaveAuditTrail(auditTrailInfo);
+            TempData["Success"] = "Hapus Berhasil";
             return Json(new { success = true, message = "Hapus Berhasil" });
-        }
+        }       
         public IActionResult ViewApproval(long? id)
         {
             AddListItems = new List<REQUEST_ITEM_DETAIL>();
@@ -446,7 +446,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateCompleted(long id)
+        public IActionResult UpdateCompleted(long id, string? notes)
         {
             try
             {
@@ -460,6 +460,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 requestItemHeader.STATUS = status?.TEXT1;
                 requestItemHeader.COMPLETED_BY = user.UserName;
                 requestItemHeader.COMPLETED_DATE = DateTime.Now;
+                requestItemHeader.COMPLETED_NOTES = notes ?? "";
                 _unitOfWork.RequestItemHeader.Update(requestItemHeader);
 
                 List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == id).ToList();
@@ -469,6 +470,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                     requestItemDetail.STATUS = status?.TEXT1;
                     requestItemDetail.COMPLETED_BY = user.UserName;
                     requestItemDetail.COMPLETED_DATE = DateTime.Now;
+                    requestItemDetail.COMPLETED_NOTES = notes ?? "";
                     _unitOfWork.RequestItemDetail.Update(requestItemDetail);
 
                     AuditTrailInfo auditTrailInfoDetail = new()
@@ -477,7 +479,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                         ModuleName = "RequestItems/UpdateCompleted",
                         TransactionId = requestItemDetail.ID,
                         ActionName = status?.TEXT1 ?? string.Empty,
-                        OtherInfo = string.Empty,
+                        OtherInfo = notes ?? string.Empty,
                         AuditTrailType = status?.INUM1 ?? 0,
                         ApplicationId = user.Id,
                         AuditTrailId = Guid.Empty
@@ -492,7 +494,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                     ModuleName = "RequestItems/UpdateCompleted",
                     TransactionId = id,
                     ActionName = status?.TEXT1 ?? string.Empty,
-                    OtherInfo = string.Empty,
+                    OtherInfo = notes ?? string.Empty,
                     AuditTrailType = status?.INUM1 ?? 0,
                     ApplicationId = user.Id,
                     AuditTrailId = Guid.Empty

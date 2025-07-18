@@ -62,60 +62,62 @@
                                        
                                     </div>
                                     <div class="card-block">
-                                       
-                                        <div class="col-12 pt-4">
-                                            <div class="form-group row pt-2">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group row pt-2">
 
-                                                <div class="col-6">
-                                                    <div class="form-group row">
-                                                        <div class="col-3">
-                                                            <label asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label> <span style="color: red">*</span>
-                                                        </div>
-                                                        <div class="col-9">
-                                                            <div class="input-group input-group-button">
-                                                                 <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" id="Show_projectName" disabled />
-                                                                <div class="input-group-append">                                                            
-                                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#lookupProjectName" type="button"><i class="fa fa-binoculars"></i></button>
-                                                                </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label> <span style="color: red">*</span>
                                                             </div>
-                                                      @*       <span asp-validation-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="text-danger"></span> *@
+                                                            <div class="col-9">
+                                                                <div class="input-group input-group-button">
+                                                                    <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" id="Show_projectName" disabled />
+                                                                    <div class="input-group-append">
+                                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#lookupProjectName" type="button"><i class="fa fa-binoculars"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                @*       <span asp-validation-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="text-danger"></span> *@
+                                                            </div>
+
                                                         </div>
-                                                        
+
+                                                    </div>
+
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" />
+                                                                <span asp-validation-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row pt-2">
+                                                    <div class="col-6">
+                                                        <div class="form-group row">
+                                                            <div class="col-3">
+                                                                <label asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap"></textarea>
+                                                                <span asp-validation-for="REQUEST_ITEM_HEADER.NOTES" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
 
                                                 </div>
-                                              
-                                                <div class="col-6">
-                                                    <div class="form-group row">
-                                                        <div class="col-3">
-                                                            <label asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
-                                                        </div>
-                                                        <div class="col-9">
-                                                            <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" />
-                                                            <span asp-validation-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="text-danger"></span>
-                                                        </div>
-                                                    </div>
 
-                                                </div>
+
                                             </div>
-                                            <div class="form-group row pt-2">
-                                                <div class="col-6">
-                                                    <div class="form-group row">
-                                                        <div class="col-3">
-                                                            <label asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
-                                                        </div>
-                                                        <div class="col-9">
-                                                            <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap"></textarea>
-                                                            <span asp-validation-for="REQUEST_ITEM_HEADER.NOTES" class="text-danger"></span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                               
-                                            </div>
-
-
                                         </div>
+                                       
 
                                         <div class="col-12 border-bottom">
                                             <h1 class="text-primary"></h1>

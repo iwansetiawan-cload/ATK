@@ -80,13 +80,47 @@
 
                                 @foreach (var obj in Model?.listData)
                                 {
+                                    {
+                                      
+                                        var status = @obj.STATUS;
+
+                                        switch (status)
+                                        {
+                                            case "New Request":
+                                                status = "btn-primary";
+                                                break;
+                                            case "Rejected":
+                                                status = "label-danger";
+                                                break;
+                                            case "Approve":
+                                                status = "btn-success";
+                                                break;
+                                            case "Process":
+                                                status = "btn-success";
+                                                break;
+                                            case "Complete":
+                                                status = "label-info";
+                                                break;
+
+                                        }
+                                    }
                                     <div class="col-sm-4">
                                         <div class="card card-border-primary">
                                             <div class="card-header">
                                                 <h5>@obj.REQUEST_ORDER_NO </h5>
                                                 <!-- <span class="label label-default f-right"> 28 January, 2015 </span> -->
                                                 <div class="dropdown-secondary dropdown f-right">
-                                                    @if (@obj.STATUS == "Approve")
+                                                    @if (@obj.STATUS == "New Request")
+                                                    {
+                                                        <button class="btn btn-primary btn-mini waves-effect waves-light" type="button" id="dropdown6" aria-haspopup="true" aria-expanded="false">@obj.STATUS</button>
+                                                        <span class="f-left m-r-5 text-inverse">Status : </span>
+                                                    }
+                                                    else if (@obj.STATUS == "Approve")
+                                                    {
+                                                        <button class="btn btn-success btn-mini waves-effect waves-light" type="button" id="dropdown6" aria-haspopup="true" aria-expanded="false">@obj.STATUS</button>
+                                                        <span class="f-left m-r-5 text-inverse">Status : </span>
+                                                    }
+                                                    else if (@obj.STATUS == "Process")
                                                     {
                                                         <button class="btn btn-success btn-mini dropdown-toggle waves-effect waves-light" type="button" id="dropdown6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@obj.STATUS</button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
@@ -94,11 +128,7 @@
                                                         </div>
                                                         <span class="f-left m-r-5 text-inverse">Status : </span>
                                                     }
-                                                    else if (@obj.STATUS == "New Request")
-                                                    {
-                                                        <button class="btn btn-primary btn-mini waves-effect waves-light" type="button" id="dropdown6" aria-haspopup="true" aria-expanded="false">@obj.STATUS</button>
-                                                        <span class="f-left m-r-5 text-inverse">Status : </span>
-                                                    }
+                                                    
                                                     else if (@obj.STATUS == "Complete")
                                                     {
                                                         <button class="btn btn-info btn-mini waves-effect waves-light" type="button" id="dropdown6" aria-haspopup="true" aria-expanded="false">@obj.STATUS</button>
@@ -123,14 +153,9 @@
                                                             <li>Keterangan: <span class="text-semibold">@obj.NOTES</span></li>
                                                         </ul>
                                                     </div>
-                                                    @*    <div class="col-sm-6">
-                                                <ul class="list list-unstyled text-right">
-                                                <li>$8,750</li>
-                                                <li>Method: <span class="text-semibold">SWIFT</span></li>
-                                                </ul>
-                                                </div> *@
+                                                 
                                                 </div>
-                                            </div>
+                                            </div>  
                                             <div class="card-footer">
                                                 <div class="task-list-table">
                                                     <p class="task-due"><strong> Due Date: </strong><strong class="label label-info">@obj.REQUEST_DATE.Value.ToString("dd/MM/yyyy")</strong></p>
@@ -143,8 +168,10 @@
                                                         <div class="dropdown-secondary dropdown">
                                                             <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown14" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
                                                             <div class="dropdown-menu" aria-labelledby="dropdown14" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-                                                                <a class="dropdown-item waves-light waves-effect" asp-area="Users" asp-controller="RequestItems" asp-action="Upsert" asp-route-id="@obj.ID"><i class="icofont icofont-spinner-alt-5"></i> Edit</a>
-                                                                <a class="dropdown-item waves-light waves-effect" href="#!"><i class="icofont icofont-ui-edit"></i> Remove </a>
+                                                                <a class="dropdown-item waves-light waves-effect" asp-area="Users" asp-controller="RequestItems" asp-action="Upsert" asp-route-id="@obj.ID"><i class="icofont icofont-ui-edit"></i> Edit</a>
+                                                                <a class="dropdown-item waves-light waves-effect" onclick=Delete("@obj.ID")><i class="fa fa-trash"></i> Remove </a>
+                                                              
+                                                                
                                                             </div>
                                                             <!-- end of dropdown menu -->
                                                         </div>
@@ -176,7 +203,8 @@
 
     <script type="text/javascript">
 
-        function AddCompleted(id) {
+        function AddCompleted(id) {            
+
             var url = "@Url.Action("UpdateCompleted", "RequestItems", new { Area = "Users" })";           
             swal({
                 title: "Selesaikan Transaksi Anda!",
@@ -184,24 +212,57 @@
                 showCancelButton: true,
                 reverseButtons: true
             },
-                function () {
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            "id": id
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Completed!", data.message, "success");
+            function () {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        "id": id
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            swal("Completed!", data.message, "success");
 
-                            }
-                            else {
-                                swal("Completed!", data.message, "error");
-                            }                         
                         }
-                    });
+                        else {
+                            swal("Completed!", data.message, "error");
+                        }                         
+                    }
                 });
+            });
+        }
+
+        function Delete(id) {
+            var url = "@Url.Action("Delete", "RequestItems", new { Area = "Users" })";
+            swal({
+                title: "Apakah Anda yakin ingin Menghapus?",
+                text: "Anda tidak akan dapat memulihkan data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Hapus",
+                closeOnConfirm: false
+            },
+            function () {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    data: {
+                        "id": id
+                    },
+                    success: function (data) {                           
+                        if (data.success) {
+                            window.location.reload(true);
+                            
+                        }
+                        else {
+                            swal("Hapus!", data.message, "error");
+                        }
+                                              
+                    }
+                });
+            });
+
         }
 
     </script>
