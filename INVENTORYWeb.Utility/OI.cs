@@ -14,5 +14,7 @@ namespace INVENTORYWeb.Utility
 
         public const string Proc_AuditTrail_SaveHeader = "Sp_AuditTrail_SaveHeader";
         public const string Proc_Get_AuditTrail_ById = "Sp_GetAuditTrail_ById";
+        public const string Proc_Get_MasterProject = "Sp_GetMasterProject";
+
     }
 }

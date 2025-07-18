@@ -16,6 +16,10 @@ using Mono.TextTemplating;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using static Azure.Core.HttpHeader;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using NuGet.Common;
+using System.Text;
 
 namespace INVENTORYWeb.Areas.Admin.Controllers
 {
@@ -31,8 +35,61 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
+            //string id = "DE337D05-4924-4F42-97F4-758B7ECB48A8";
+            //GetPRHeader(id);
+
+            //PurchaseRequestHeaderViewModel obj = new PurchaseRequestHeaderViewModel();
+            //obj.Id = "edf24db4-8498-4f5c-b278-5f7fb526965b";
+            //obj.timestamp = DateTime.Now;
+            //obj.actor = null;
+            //obj.DocumentNumber = "PR/ATK/0725/RDS";
+            //obj.CreatedDate = DateTime.Now;
+            //obj.DeadlineDate = DateTime.Now;
+            //obj.ProjectName = "ATK";
+            //obj.Company = "RDS";
+            //obj.Description = "Tes Post APP";
+            //obj.IsCancel = 0;
+            //obj.UserProfileId = "8d3707f2-4aee-42c3-83b0-e25182cada94";
+            //obj.ApproverId = "edf24db4-8498-4f5c-b278-5f7fb526965b";
+            //PostPRHeader(obj);
             return View();
         }
+        //public List<PurchaseRequestDetailViewModel> GetPRDetailList(string? id)
+        //{
+        //    try
+        //    {
+        //        PurchaseRequestDetailViewModel result = new PurchaseRequestDetailViewModel();
+        //        var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").FirstOrDefault();
+        //        string query = "purchase_request/Get_Header_ById?id=" + id;
+        //        string URL = query;
+
+        //        using (var client = new HttpClient())
+        //        {
+
+        //            client.BaseAddress = new Uri(ApiUrl.ToString());
+        //            client.DefaultRequestHeaders.Clear();
+        //            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        //            var task = Task.Run(() => client.GetAsync(URL));
+        //            task.Wait();
+        //            var Res = task.Result;
+
+        //            if (Res.IsSuccessStatusCode)
+        //            {
+        //                var ListData = Res.Content.ReadAsStringAsync().Result;
+        //                result = JsonConvert.DeserializeObject<List<PurchaseRequestDetailViewModel>>(ListData);
+        //                return result;
+        //            }
+        //        }
+        //        return null;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        return null;
+        //    }
+
+        //}
         [HttpGet]
         public IActionResult GetAll(string status)
         {
@@ -52,6 +109,10 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             else if (status == "approval")
             {
                 allObj = allObj.Where(z => z.status_id == 1 || z.status_id == 2).ToList();
+            }
+            else if (status == "process")
+            {
+                allObj = allObj.Where(z => z.status_id == 5).ToList();
             }
             else if (status == "completed")
             {
@@ -143,7 +204,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             }
             catch (Exception)
             {
-                TempData["Failed"] = "Error approved";
+                TempData["error"] = "Error approved";
                 return Json(new { success = false, message = "Approved Error"});
             }
 
@@ -344,6 +405,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 REQUEST_ITEM_HEADER = new()
                 {
                     REQUEST_DATE = DateTime.Now,
+                    DUEDATE = DateTime.Now,
                 },
                 REQUEST_ITEM_DETAIL = new(),
             };
@@ -354,11 +416,127 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             else
             {
                 vm.REQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.Get(id);
+                vm.REQUEST_ITEM_HEADER.DUEDATE = vm.REQUEST_ITEM_HEADER.DUEDATE ?? DateTime.Now;
                 vm.ListItems = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z => z.HEADER_ID == id).ToList();
 
                 return View(vm);
             }
 
+        }
+        [HttpPost]
+        public IActionResult ProcessApproval(RequestItemHeaderViewModel vm)
+        {
+            try
+            {
+                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(vm.REQUEST_ITEM_HEADER.ID);
+                if (requestItemHeader.STATUS != "Approve")
+                {
+                    TempData["Information"] = "Hanya status Approve yang dapat di Process";
+                    return View(vm);
+                }
+                if (requestItemHeader != null)
+                {
+                    var claimsIdentity = (ClaimsIdentity)User.Identity;
+                    var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+                    var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 5).FirstOrDefault();
+
+                    PurchaseRequestHeaderViewModel body = new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        timestamp = DateTime.Now,
+                        actor = null,
+                        DocumentNumber = requestItemHeader.REQUEST_ORDER_NO,
+                        CreatedDate = requestItemHeader.CREATE_DATE,
+                        DocumentDate = requestItemHeader.CREATE_DATE,
+                        DeadlineDate = vm.REQUEST_ITEM_HEADER.DUEDATE,
+                        ProjectName = requestItemHeader.PROJECT_NAME,
+                        Company = "RDS",
+                        Description = requestItemHeader.NOTES,
+                        IsCancel = 0,
+                        UserProfileId = "8d3707f2-4aee-42c3-83b0-e25182cada94",
+                        ApproverId = "edf24db4-8498-4f5c-b278-5f7fb526965b"
+                    };
+                    FormDto<PurchaseRequestHeaderViewModel> dtoPostPRHeader = PostPRHeader(body);
+
+                    if (dtoPostPRHeader.Success)
+                    {
+
+                        requestItemHeader.DUEDATE = vm.REQUEST_ITEM_HEADER.DUEDATE;
+                        requestItemHeader.STATUS_ID = status?.INUM1;
+                        requestItemHeader.STATUS = status?.TEXT1;
+                        requestItemHeader.PROCESS_BY = user.UserName;
+                        requestItemHeader.PROCESS_DATE = DateTime.Now;
+                        requestItemHeader.S1_ID = dtoPostPRHeader?.Data?.Id;
+                        _unitOfWork.RequestItemHeader.Update(requestItemHeader);
+                        _unitOfWork.Save();
+                        TempData["Process"] = "Process To Purchase Request Successfully";
+                    }
+
+                    #region Post Detail
+                    List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z => z.HEADER_ID == requestItemHeader.ID && z.STATUS == "Approve").ToList();
+                    foreach (var requestItemDetail in requestItemDetailList)
+                    {
+                        PurchaseRequestDetailViewModel bodyDetail = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            timestamp = DateTime.Now,
+                            actor = null,
+                            ItemName = requestItemDetail.ITEM_NAME,
+                            ItemDescription = requestItemDetail.ITEMS.DESCRIPTION,
+                            ItemQuantity = requestItemDetail.QTY_ADJUST != null ? requestItemDetail.QTY_ADJUST : requestItemDetail.QTY,
+                            ItemUnit = requestItemDetail.CATEGORY,
+                            Brand = "",
+                            Spesification = requestItemDetail.ITEMS.DESCRIPTION,
+                            PurchaseRequestHeaderId = dtoPostPRHeader?.Data?.Id
+                        };
+                        FormDto<PurchaseRequestDetailViewModel> dtoPostPRDetail = PostPRDetail(bodyDetail);
+
+                        requestItemDetail.STATUS_ID = status?.INUM1;
+                        requestItemDetail.STATUS = status?.TEXT1;
+                        requestItemDetail.S1_ID = dtoPostPRDetail?.Data?.Id;
+                        _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+
+                        AuditTrailInfo auditTrailInfoDetail = new()
+                        {
+                            UserName = user.Name,
+                            ModuleName = "RequestApproval/ProcessApproval",
+                            TransactionId = requestItemDetail.ID,
+                            ActionName = status?.TEXT1 ?? string.Empty,
+                            OtherInfo = string.Empty,
+                            AuditTrailType = status?.INUM1 ?? 0,
+                            ApplicationId = user.Id,
+                            AuditTrailId = Guid.Empty,
+                        };
+                        SaveAuditTrail(auditTrailInfoDetail);
+                    }
+                    _unitOfWork.Save();
+
+                    #endregion
+
+                    AuditTrailInfo auditTrailInfo = new()
+                    {
+                        UserName = user.Name,
+                        ModuleName = "RequestApproval/ProcessApproval",
+                        TransactionId = requestItemHeader.ID,
+                        ActionName = status?.TEXT1 ?? string.Empty,
+                        OtherInfo = string.Empty,
+                        AuditTrailType = status?.INUM1 ?? 0,
+                        ApplicationId = user.Id,
+                        AuditTrailId = Guid.Empty
+                    };
+                    SaveAuditTrail(auditTrailInfo);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                TempData["error"] = "Error Process";             
+            }
+
+            return RedirectToAction(nameof(ProcessApproval), new { id = vm.REQUEST_ITEM_HEADER.ID });
+           
         }
         [HttpPost]
         public async Task<IActionResult> AddItem(long? id, int? qty, int? stock)
@@ -537,6 +715,115 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             TempData["Failed"] = "Error validation";
             return Json(new { success = false, message = "" });
         }
+
+        #region RestApi
+        public FormDto<PurchaseRequestHeaderViewModel> GetPRHeader(string? id)
+        {
+            try
+            {
+                FormDto<PurchaseRequestHeaderViewModel> result = new FormDto<PurchaseRequestHeaderViewModel>();
+                var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").FirstOrDefault();
+                string query = "purchase_request/get_header_byId?id=" + id;
+                string URL = query;
+
+                using (var client = new HttpClient())
+                {
+
+                    client.BaseAddress = new Uri(ApiUrl.ToString());
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var task = Task.Run(() => client.GetAsync(URL));
+                    task.Wait();
+                    var Res = task.Result;
+
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        var ListData = Res.Content.ReadAsStringAsync().Result;
+                        result = JsonConvert.DeserializeObject<FormDto<PurchaseRequestHeaderViewModel>>(ListData);
+                        return result;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
+        }                
+        public FormDto<PurchaseRequestHeaderViewModel> PostPRHeader(PurchaseRequestHeaderViewModel obj)
+        {
+            try
+            {
+                FormDto<PurchaseRequestHeaderViewModel>? PurchaseRequestDetailViewModel = new FormDto<PurchaseRequestHeaderViewModel>();
+                var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").Select(i => i.TEXT2).FirstOrDefault();          
+                string query = "purchase_request/post_header";
+                string URL = query;           
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(ApiUrl.ToString());
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var requestbody = JsonConvert.SerializeObject(obj);
+                    var data = new StringContent(requestbody, Encoding.UTF8, "application/json");
+                    var response = client.PostAsync(URL, data).Result;                    
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = response.Content.ReadAsStringAsync().Result;
+                        PurchaseRequestDetailViewModel = JsonConvert.DeserializeObject<FormDto<PurchaseRequestHeaderViewModel>>(result);                       
+                    }                
+                    
+                }
+                return PurchaseRequestDetailViewModel;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
+        }
+        public FormDto<PurchaseRequestDetailViewModel> PostPRDetail(PurchaseRequestDetailViewModel obj)
+        {
+            try
+            {
+                FormDto<PurchaseRequestDetailViewModel>? resultBody = new FormDto<PurchaseRequestDetailViewModel>();
+                var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").Select(i => i.TEXT2).FirstOrDefault();
+                string query = "purchase_request/post_detail";
+                string URL = query;
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(ApiUrl.ToString());
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var requestbody = JsonConvert.SerializeObject(obj);
+                    var data = new StringContent(requestbody, Encoding.UTF8, "application/json");
+                    var response = client.PostAsync(URL, data).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = response.Content.ReadAsStringAsync().Result;
+                        resultBody = JsonConvert.DeserializeObject<FormDto<PurchaseRequestDetailViewModel>>(result);
+                    }
+
+                }
+                return resultBody;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
+        }
+        #endregion
     }
 }
 

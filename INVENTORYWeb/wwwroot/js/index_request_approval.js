@@ -9,7 +9,10 @@ $(document).ready(function () {
     else {
         if (url.includes("completed")) {
             loadDataTable("GetAll?status=completed");
-        }    
+        } 
+        else if (url.includes("process")){
+            loadDataTable("GetAll?status=process");
+        }
         else {
             loadDataTable("GetAll?status=waitingApproval");
         }

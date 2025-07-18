@@ -4,6 +4,7 @@ using INVENTORYWeb.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace INVENTORYWeb.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717090442_Addrelations1ToDetail")]
+    partial class Addrelations1ToDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,12 +272,6 @@ namespace INVENTORYWeb.DataAccess.Migrations
 
                     b.Property<string>("NOTES")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PROCESS_BY")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PROCESS_DATE")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PROJECT_NAME")
                         .IsRequired()

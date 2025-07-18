@@ -32,6 +32,19 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         {
             return View();
         }
+        public IActionResult ListView()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+            RequestItemsListViewModel vm = new()
+            {
+                listData = _unitOfWork.RequestItemHeader.GetAll().Where(z => z.CREATE_BY == user.UserName && z.STATUS_ID >= 0)
+            };
+
+            return View(vm);
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -59,6 +72,9 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         [HttpGet]
         public IActionResult GetAllMasterProject()
         {
+            MasterProjectViewModel obj = new MasterProjectViewModel();
+            obj.ListData = _unitOfWork.SP_Call.List<MasterProject>(OI.Proc_Get_MasterProject);
+
             var allObj = (from z in _unitOfWork.MasterProject.GetAll()
                           select new
                           {

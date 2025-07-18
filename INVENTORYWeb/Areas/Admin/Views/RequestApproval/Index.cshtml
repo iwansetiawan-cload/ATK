@@ -3,6 +3,7 @@
     var title = "List Permintaan Barang";
     var waitingApproval = "btn-primary btn-outline-primary waves-light";
     var approval = "btn-primary btn-outline-primary waves-light";   
+    var process = "btn-primary btn-outline-primary waves-light";
     var completed = "btn-primary btn-outline-primary waves-light";
 
     switch (status)
@@ -12,7 +13,10 @@
             break;
         case "approval":
             approval = "btn-primary btn-outline-inverse waves-light active";
-            break;     
+            break;  
+        case "process":
+            process = "btn-primary btn-outline-inverse waves-light active";
+            break;
         default:
             waitingApproval = "btn-primary btn-outline-inverse waves-light active";
             break;
@@ -57,6 +61,7 @@
                                         <div class="btn-group " role="group" data-toggle="tooltip" data-placement="top" title="">
                                             <a class="btn @waitingApproval" asp-controller="RequestApproval" asp-action="Index" asp-route-status="waitingApproval">Waiting Approve</a>
                                             <a class="btn @approval" asp-controller="RequestApproval" asp-action="Index" asp-route-status="approval">Approved/ Rejected</a>
+                                            <a class="btn @process" asp-controller="RequestApproval" asp-action="Index" asp-route-status="process">Process</a>
                                             <a class="btn @completed" asp-controller="RequestApproval" asp-action="Index" asp-route-status="completed">Completed</a>
                                         </div>
                                     </div>
@@ -96,5 +101,5 @@
 
 @section Scripts {
 
-    <script src="~/js/index_request_approval2.js"></script>
+    <script src="~/js/index_request_approval.js"></script>
 }

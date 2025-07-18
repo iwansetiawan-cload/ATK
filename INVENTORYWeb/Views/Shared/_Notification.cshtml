@@ -52,3 +52,38 @@
 
     </script>
 }
+
+@if (TempData["Information"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+
+    <script type="text/javascript">       
+            $(document).ready(function () {
+                new PNotify({
+                    title: 'Information ',
+                    text: '@TempData["Information"]',
+                    icon: 'icofont icofont-info-square',
+                    type: 'info'
+                });
+            });
+
+
+    </script>
+}
+
+@if (TempData["Process"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script type="text/javascript">   
+            $(document).ready(function () {
+                new PNotify({
+                    title: 'Process Berhasil ',
+                    text: '@TempData["Process"]',
+                    icon: 'icofont icofont-info-circle',
+                    type: 'success'
+                });
+            });
+    </script>
+}

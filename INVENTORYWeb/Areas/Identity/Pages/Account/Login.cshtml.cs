@@ -132,7 +132,7 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
                     if (AppUsers.RolesName == OI.Role_User)
-                        returnUrl = Url.Content("~/Users/Home/");
+                        returnUrl = Url.Content("~/Users/RequestItems/ListView");
                     return LocalRedirect(returnUrl);
 
                 }

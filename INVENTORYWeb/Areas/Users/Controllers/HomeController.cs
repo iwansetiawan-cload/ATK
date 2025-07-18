@@ -14,44 +14,22 @@ namespace INVENTORYWeb.Areas.Users.Controllers
     [Authorize(Roles = OI.Role_User + "," + OI.Role_SuperAdmin)]
     public class HomeController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;        
 
-        public HomeController( IUnitOfWork unitOfWork)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
-            //_logger = logger;
+            _logger = logger;
             _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
-
-            RequestItemsListViewModel vm = new()
-            {
-                listData = _unitOfWork.RequestItemHeader.GetAll().Where(z => z.CREATE_BY == user.UserName && z.STATUS_ID >= 0)
-            };
-
-            return View(vm);
+            return View();
         }
-        public IActionResult RequestItemsList()
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
-
-            RequestItemsListViewModel vm = new()
-            {
-                listData = _unitOfWork.RequestItemHeader.GetAll().Where(z=>z.CREATE_BY == user.UserName && z.STATUS_ID >= 0)
-            };
-           
-            return View(vm);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
     }
 }

@@ -3,7 +3,7 @@
 @{
     // Layout = "~/Views/Shared/_Layout.cshtml";
     var title = "Process Approval";
-    // var status = @Model.REQUEST_ITEM_HEADER.STATUS;
+    var status = @Model.REQUEST_ITEM_HEADER.STATUS;
     // var status_label = "";
 
     // switch (status)
@@ -74,12 +74,18 @@
                                                     <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="text-inverse" style="font-weight: bold">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                                     <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-                                                        <a class="dropdown-item waves-light waves-effect" onclick=ApproveHeader($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Approve</a>
-                                                        <a class="dropdown-item waves-light waves-effect" onclick=RejectHeader($('#IdHeader').val())><i class="icofont icofont-close-circled"></i> Reject</a>
-                                                        <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
+                                                        @if (status != "Process" && status != "Complete")
+                                                        {
+                                                            <a class="dropdown-item waves-light waves-effect" onclick=ApproveHeader($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Approve</a>
+                                                            <a class="dropdown-item waves-light waves-effect" onclick=RejectHeader($('#IdHeader').val())><i class="icofont icofont-close-circled"></i> Reject</a>
+                                                            <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
+                                                        }                  
                                                     </div>                                                   
-                                                    <span class="f-left m-r-5 text-inverse">Status :
-                                                        @* <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly /> *@
+                                                    <span class="f-left m-r-5 text-inverse">Status :                                                       
                                                         <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />
                                                     </span>                                                   
                                                
@@ -135,11 +141,17 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="form-group row">
-
                                                             <label class="col-sm-3 col-form-label">Due Date</label>
                                                             <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" />
-                                                                @* <input asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" class="form-control" style="row-gap" asp-format="{0:#,###}" id="TOTAL_QTY" readonly /> *@
+                                                                @if (status != "Process" && status != "Complete")
+                                                                {
+                                                                    <input asp-for="REQUEST_ITEM_HEADER.DUEDATE" class="form-control" type="date"/>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input asp-for="REQUEST_ITEM_HEADER.DUEDATE" class="form-control" type="date" readonly />
+                                                                }
+                                                                                                                        
                                                             </div>
                                                         </div>
 
@@ -227,11 +239,11 @@
 
                                 <div class="row text-center">
                                     <div class="col-sm-12 invoice-btn-group text-center">
-                                        <button type="submit" class="btn btn-warning btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" style="background-color:rgb(255,168,20)"><i class="icofont icofont-save"></i>Process</button>
-                                     
+                                        @if (status != "Process" && status != "Complete")
+                                        {
+                                            <button type="submit" class="btn btn-warning btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" style="background-color:rgb(255,168,20)"><i class="icofont icofont-save"></i>Process</button>
+                                        }
                                         <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
-                                   @*      <a asp-action="Index" class="btn btn-inverse btn-outline-inverse previous m-b-10 btn-sm"><i class="icofont icofont-undo"></i>Kembali</a> *@
-
                                     </div>
 
                                 </div>
@@ -427,31 +439,76 @@
                     { "data": "piece", "autoWidth": true },
                     { "data": "qty", "autoWidth": true },
                     { "data": "status", "autoWidth": true },
+                    // {
+                    //     "data": "status",
+                    //     "render": function (data) {
+                    //         return `
+                    //          <i class="icofont icofont-check-circled text-success f-20"></i>
+                          
+
+                    //         `;
+                    //     }, "autoWidth": true
+                    // },
                     { "data": "adjust", "autoWidth": true },
                     { "data": "notes", "autoWidth": true },
-                   
-                    {
-                        "data": "id",
-                        "render": function (data) {
-                            return `
+                    { "data": "id", "autoWidth": true },
+                    // {
+                    //     "data": "id",
+                    //     "render": function (data) {
+                    //         return `
+                    //         <div class="dropdown-secondary dropdown">
+                    //             <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
+                    //             <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                    //                 <a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("${data}")><i class="icofont icofont-check-circled"></i> Approve</a>
+                    //                 <a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("${data}")><i class="icofont icofont-close-circled"></i> Reject</a>
+                    //                 <a class="dropdown-item waves-light waves-effect" data-toggle="modal" data-target="#lookupAdjust" onclick=GetIdItem("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
+
+                    //                 <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("${data}") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>
+                    //             </div>
+                    //         </div>
                             
-                            <div class="dropdown-secondary dropdown">
-                                <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
-                                <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-                                    <a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("${data}")><i class="icofont icofont-check-circled"></i> Approve</a>
-                                    <a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("${data}")><i class="icofont icofont-close-circled"></i> Reject</a>
-                                    <a class="dropdown-item waves-light waves-effect" data-toggle="modal" data-target="#lookupAdjust" onclick=GetIdItem("${data}")><i class="fa fa-pencil-square-o"></i> Adjusted</a>
-                                    <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("${data}") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>     
-                                </div>
-                            </div>
-                                `;
-                        }, "autoWidth": true
-                    }
+                    //         `;
+                    //     }, "autoWidth": true
+                    // }
                 ],
                 "createdRow": function (row, data, index) {
                     $('td', row).eq(2).attr("style", "text-align: right");
                     $('td', row).eq(3).attr("style", "text-align: right");
                     $('td', row).eq(5).attr("style", "text-align: right");
+                    var _status = "";
+                    if (data["status"] == 'Process' || data["status"] == 'Complete') {
+                        _status += '' + data["status"] + '&nbsp; <i class="icofont icofont-check-circled text-success f-20" > </i>';
+                        $('td', row).eq(4).html(_status);
+                    } else {
+                        _status += '' + data["status"] + '';
+                        $('td', row).eq(4).html(_status);
+                    }
+            
+
+                    var href = "";
+                    var status_header = $("#curent_status").val();
+                    if (status_header == "Process" || status_header == "Complete") {
+                        href += '<div class="dropdown-secondary dropdown" >';
+                        href += '<button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>';
+                        href += '<div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">';
+
+                        href += '<a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("' + data["id"] + '") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>';
+                        href += '</div>';
+                        href += '</div>';
+                        $('td', row).eq(7).html(href);
+                    } else {
+                        href += '<div class="dropdown-secondary dropdown">';
+                        href += '<button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>';
+                        href += '<div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">';
+                        href += '<a class="dropdown-item waves-light waves-effect" onclick=ApproveDetail("' + data["id"] + '")><i class="icofont icofont-check-circled"></i> Approve</a>';
+                        href += '<a class="dropdown-item waves-light waves-effect" onclick=RejectDetail("' + data["id"] + '")><i class="icofont icofont-close-circled"></i> Reject</a>';
+                        href += '<a class="dropdown-item waves-light waves-effect" data-toggle="modal" data-target="#lookupAdjust" onclick=GetIdItem("' + data["id"] + '")><i class="fa fa-pencil-square-o"></i> Adjusted</a>';
+
+                        href += '<a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("' + data["id"] + '") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>';
+                        href += '</div>';
+                        href += '</div>';
+                        $('td', row).eq(7).html(href);
+                    }
                     $(row).attr('data-dismiss', 'modal');
                 }
             });

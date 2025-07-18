@@ -75,8 +75,8 @@
         {         
 
             <ul class="pcoded-item pcoded-left-item">
-                <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/Home" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/Home/RequestItemsList" ? "active":"" )">
-                    <a asp-area="Users" asp-controller="Home" asp-action="RequestItemsList" class="waves-effect waves-dark">
+                <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Users/RequestItems/ListView" ? "active":"" )">
+                    <a asp-area="Users" asp-controller="RequestItems" asp-action="ListView" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-home"></i></span>
                         <span class="pcoded-mtext">Home</span>
                         <span class="pcoded-mcaret"></span>
