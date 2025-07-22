@@ -41,8 +41,8 @@ function loadDataTable() {
                 href += '<a href="/Users/RequestItems/ViewApproval/ ' + data["id"] + '" class="btn btn-info btn-mini b-none text-white" style="cursor:pointer"><i class="icofont icofont-eye m-0"></i> </a>';
                 $('td', row).eq(5).html(href);
             } else {
-                href += '<a href="/Users/RequestItems/Upsert/' + data["id"] + '" class="btn btn-primary btn-mini b-none" style="cursor:pointer" title="edit"><i class="fa fa-pencil-square-o m-0"></i></a>&nbsp;';
-                href += '<a onclick=Delete("/Users/RequestItems/Delete/' + data["id"] + '") class="btn btn-danger btn-mini b-none text-white" style="cursor:pointer" title="delete"><i class="fa fa-trash m-0"></i></a>';
+                href += '<a href="/Users/RequestItems/Upsert/' + data["id"] + '" class="btn btn-primary btn-mini b-none" style="cursor:pointer" title="edit"><i class="icofont icofont-ui-edit m-0"></i></a>&nbsp;';
+                href += '<a onclick=Delete("/Users/RequestItems/Delete/' + data["id"] + '") class="btn btn-danger btn-mini b-none text-white" style="cursor:pointer" title="delete"><i class="icofont icofont-delete-alt m-0"></i></a>';
                
                 $('td', row).eq(5).html(href);
             }

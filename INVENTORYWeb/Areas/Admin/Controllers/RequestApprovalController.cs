@@ -429,18 +429,23 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             try
             {
                 REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(vm.REQUEST_ITEM_HEADER.ID);
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+                var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 5).FirstOrDefault();
                 if (requestItemHeader.STATUS != "Approve")
                 {
                     TempData["Information"] = "Hanya status Approve yang dapat di Process";
                     return View(vm);
                 }
+                if (string.IsNullOrEmpty(user.UserIdS1))
+                {
+                    TempData["error"] = "Mohon setup user pengaturan ke user S1";
+                    return View(vm);
+                }
+
                 if (requestItemHeader != null)
                 {
-                    var claimsIdentity = (ClaimsIdentity)User.Identity;
-                    var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                    var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
-                    var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 5).FirstOrDefault();
-
                     PurchaseRequestHeaderViewModel body = new()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -454,8 +459,8 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                         Company = "RDS",
                         Description = requestItemHeader.NOTES,
                         IsCancel = 0,
-                        UserProfileId = "8d3707f2-4aee-42c3-83b0-e25182cada94",
-                        ApproverId = "edf24db4-8498-4f5c-b278-5f7fb526965b"
+                        UserProfileId = user.UserIdS1,
+                        ApproverId = user.UserIdS1
                     };
                     FormDto<PurchaseRequestHeaderViewModel> dtoPostPRHeader = PostPRHeader(body);
 
@@ -470,7 +475,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                         requestItemHeader.S1_ID = dtoPostPRHeader?.Data?.Id;
                         _unitOfWork.RequestItemHeader.Update(requestItemHeader);
                         _unitOfWork.Save();
-                        TempData["Process"] = "Process To Purchase Request Successfully";
+                        TempData["Process"] = "Process Successfully";
                     }
 
                     #region Post Detail
@@ -716,43 +721,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             return Json(new { success = false, message = "" });
         }
 
-        #region RestApi
-        public FormDto<PurchaseRequestHeaderViewModel> GetPRHeader(string? id)
-        {
-            try
-            {
-                FormDto<PurchaseRequestHeaderViewModel> result = new FormDto<PurchaseRequestHeaderViewModel>();
-                var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").FirstOrDefault();
-                string query = "purchase_request/get_header_byId?id=" + id;
-                string URL = query;
-
-                using (var client = new HttpClient())
-                {
-
-                    client.BaseAddress = new Uri(ApiUrl.ToString());
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    var task = Task.Run(() => client.GetAsync(URL));
-                    task.Wait();
-                    var Res = task.Result;
-
-                    if (Res.IsSuccessStatusCode)
-                    {
-                        var ListData = Res.Content.ReadAsStringAsync().Result;
-                        result = JsonConvert.DeserializeObject<FormDto<PurchaseRequestHeaderViewModel>>(ListData);
-                        return result;
-                    }
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-
-                return null;
-            }
-
-        }                
+        #region RestApi       
         public FormDto<PurchaseRequestHeaderViewModel> PostPRHeader(PurchaseRequestHeaderViewModel obj)
         {
             try

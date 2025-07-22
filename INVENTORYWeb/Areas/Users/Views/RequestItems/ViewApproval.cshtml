@@ -71,13 +71,12 @@
                                          <div class="dropdown-secondary dropdown f-right">
                                             <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="label label-primary">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
                                             @if (@status == "Process")
-                                            {
-                                            
+                                            {                                           
                                                 
                                                 <button class="btn @status_label btn-mini dropdown-toggle waves-effect waves-light" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@Model.REQUEST_ITEM_HEADER.STATUS</button>
                                                  <div class="dropdown-menu" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                                     <a class="dropdown-item waves-light waves-effect" onclick=AddCompleted($('#IdHeader').val())><i class="icofont icofont-check-circled"></i> Completed</a>
-                                                    <a class="dropdown-item waves-light waves-effect md-trigger" data-modal="modal-complete"><i class="icofont icofont-check-circled"></i>Cek Completed</a>
+                                                   @*  <a class="dropdown-item waves-light waves-effect md-trigger" data-modal="modal-complete"><i class="icofont icofont-check-circled"></i>Cek Completed</a> *@
                                                 </div>      
                                                 <span class="f-left m-r-5 text-inverse">Status : </span>
                                             }else
@@ -205,6 +204,7 @@
                             <!-- Page body end -->
 
                         </div>
+
                     </form>
 
                    
@@ -217,117 +217,30 @@
     </div>
 </div>
 
- <div class="md-modal md-effect-13 addcontact" id="modal_completed">
-    <div class="md-content">
-        <h3 class="f-26">Keterangan</h3>
-        <div class="form-material">
-
-            <div class="material-group">
-                <div class="form-group form-primary">                                
-                    <textarea asp-for="REQUEST_ITEM_HEADER.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectHeader_note"></textarea>
-                    <span class="form-bar"></span>                                        
-                </div>
-            </div>
-                          
-
-            <div class="text-center">
-                <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectHeader(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
-                <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="md-modal md-effect-1" id="modal-complete">
-    <div class="md-content">
-        <h5>Selesaikan Transaksi Anda!</h5>
-        <div class="form-material">
-
-            <div class="material-group">
-                <div class="form-group form-primary">
-                    <textarea asp-for="REQUEST_ITEM_HEADER.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectHeader_note"></textarea>
-                    <span class="form-bar"></span>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectHeader(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
-               @*  <button type="button" class="btn btn-primary waves-effect md-close">Close</button> *@
-                 <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</Close>
-            </div>
-        </div>
-       @*  <div>
-            <p>This is a modal window. You can do the following things with it:</p>
-            <ul>
-                <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
-                <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
-                <li><strong>Close:</strong> click on the button below to close the modal.</li>
-            </ul>
-            <button type="button" class="btn btn-primary waves-effect md-close">Close</button>
-        </div> *@
-    </div>
-</div>
 <div class="md-overlay"></div>
 
-<div class="modal fade" id="lookupAdjust2" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-
-            <div class="modal-body">
-                <div class="card">
-
-                    <div class="card-header">
-                        <h5>Adjust Qty Input</h5>
-                    </div>
-                    <div class="card-block">
-                        <form class="form-material">
-
-                            <div class="form-group form-default">
-                                <input type="number" id="GetQty" class="form-control" required="" maxlength="6">
-                                <span class="form-bar"></span>
-                                <label class="float-label">Qty</label>
-                            </div>
-                            <div class="form-group form-default">
-                                <textarea class="form-control" required="" id="GetNotes"></textarea>
-                                <span class="form-bar"></span>
-                                <label class="float-label">Keterangan</label>
-                            </div>
-                        </form>
-                    </div>
-
-
-                </div>
-            </div>
-            <div class="row text-center">
-                <div class="col-sm-12 invoice-btn-group text-center">
-                    <button type="submit" class="btn btn-primary btn-print-invoice m-b-30 btn-sm waves-effect waves-light m-r-20" onclick="SimpanDataAdjust()"><i class="icofont icofont-save"></i>Simpan</button>
-                    <button type="button" class="btn btn-danger waves-effect m-b-30 btn-sm waves-light" data-dismiss="modal"><i class="icofont icofont-ui-close"></i>Batal</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="md-modal md-effect-13 addcontact" id="lookupAdjust">
+<div class="md-modal md-effect-1" id="modal-complete">
     <div class="md-content">
-        <h3 class="f-26">Tambah Golongan</h3>
-        <div class="form-material">
+        <h3 class="f-26">Selesaikan Transaksi Anda!</h3>
+        <div>
+            <div class="form-material">
 
-            <div class="material-group">
                 <div class="form-group form-primary">
-                    <textarea asp-for="REQUEST_ITEM_HEADER.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectHeader_note"></textarea>
+                    <textarea type="text" name="rejectHeader_note" id="rejectHeader_note" class="form-control" required=""></textarea>
                     <span class="form-bar"></span>
-                    <label class="float-label">Nama Golongan</label>
+                    <label class="float-label">Keterangan</label>
                 </div>
+
             </div>
-            
             <div class="text-center">
-                <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 d-inline-block save_btn" onclick="SimpanData()"><i class="icofont icofont-save"></i>Simpan</button>
-                <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
+                <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 d-inline-block save_btn"><i class="icofont icofont-save"></i>Simpan</button>
+                <button type="button" class="btn btn-danger waves-effect md-close"><i class="icofont icofont-ui-close"></i>Close</button>
             </div>
+           
         </div>
-    </div>
+    </div>  
 </div>
+
 
 @section Scripts {
 
@@ -368,24 +281,23 @@
                 }
             });
         }
+        
+
         function AddCompleted(id) {
-            var urls = "@Url.Action("UpdateCompleted", "RequestItems", new { Area = "Users" })";
-            // var urls = "/Admin/RequestApproval/RejectDetail";
+           
+            var url = "@Url.Action("UpdateCompleted", "RequestItems", new { Area = "Users" })";
             swal({
                 title: "Selesaikan Transaksi Anda!",
                 text: "Keterangan  :",
                 type: "input",
                 showCancelButton: true,
-                closeOnConfirm: false
+                closeOnConfirm: false,
+                inputPlaceholder: "keterangan"
             }, function (inputValue) {
-                // if (inputValue === false) return false;
-                // if (inputValue === "") {
-                //     swal.showInputError("Keterangan harus diisi!");
-                //     return false
-                // }
+                if (inputValue === false) return false;             
                 $.ajax({
                     type: "POST",
-                    url: urls,
+                    url: url,
                     data: {
                         "id": id,
                         "notes": inputValue
@@ -393,46 +305,15 @@
                     success: function (data) {
                         if (data.success) {
                             swal("Complated!", data.message, "success");
-                           
                         }
                         else {
                             swal("Complated!", data.message, "error");
                         }
-                   
+                        dataTable.ajax.reload();
                     }
                 });
             });
-           
 
-        }
-        function AddCompleted2(id) {           
-            var url = "@Url.Action("UpdateCompleted", "RequestItems", new { Area = "Users" })";
-            swal({
-                title: "Selesaikan Transaksi Anda!",
-                icon: "success",
-                type: "input",
-                showCancelButton: true,
-                reverseButtons: true
-            },
-                function () {
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        data: {
-                            "id": id
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal("Completed!", data.message, "success");
-
-                            }
-                            else {
-                                swal("Completed!", data.message, "error");
-                            }
-                            dataTable.ajax.reload();
-                        }
-                    });
-                });
         }
 
     </script>

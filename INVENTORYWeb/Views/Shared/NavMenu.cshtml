@@ -9,6 +9,7 @@
 @inject IUnitOfWork _unitOfWork
 
 @{
+    
     string? rolesName = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == UserManager.GetUserName(User)).Select(i => i.RolesName).FirstOrDefault();
 }
 
@@ -192,7 +193,7 @@
         @if (rolesName == OI.Role_SuperAdmin)
         {
             <ul class="pcoded-item pcoded-left-item">
-                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Identity/Account/CreateUser" ? "active pcoded-trigger":"" )">
+                <li class="pcoded-hasmenu @(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Identity/Account/CreateUser" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan/Upsert/" ? "active pcoded-trigger":"" )">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-settings"></i><b>FC</b></span>
                         <span class="pcoded-mtext">Pengaturan User</span>
@@ -200,7 +201,7 @@
                     </a>
                     <ul class="pcoded-submenu">
 
-                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" ? "active":"" )">
+                        <li class="@(Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Admin/Pengaturan" || Regex.Replace(Context.Request.Path, "[0-9.]", "") == "/Identity/Account/CreateUser" || Regex.Replace(Context.Request.Path, "3e94a2e0-1451-4692-b4ae-a66414aa17b8", "") == "/Admin/Pengaturan/Upsert/" ? "active":"" )">
                             <a asp-area="Admin" asp-controller="Pengaturan" asp-action="" class="waves-effect waves-dark">
                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                 <span class="pcoded-mtext">User Akses</span>

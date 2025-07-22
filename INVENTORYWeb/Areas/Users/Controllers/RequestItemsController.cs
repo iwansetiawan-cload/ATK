@@ -155,7 +155,8 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                         List <REQUEST_ITEM_HEADER> ListHeader = _unitOfWork.RequestItemHeader.GetAll().ToList();
                         if (ListHeader.Count > 0)
                             RowNUmber = ListHeader.Max(z => z.ROW_NUMBER) + 1;
-                        string RONumber = "RO" + DateTime.Now.ToString("yyMM") + "-" + (RowNUmber.ToString().PadLeft(5, '0'));
+                        string RomawiString = IntToRoman(DateTime.Now.Month);
+                        string RONumber = string.Join(string.Empty, "PR" + "/" + (RowNUmber.ToString().PadLeft(5, '0') + "/" + RomawiString + "/" + DateTime.Now.ToString("yy") + "/RDS")) ;                        
 
                         obj.REQUEST_ITEM_HEADER.TOTAL_QTY = AddListItems.Sum(z => z.QTY);
                         obj.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO = RONumber;
@@ -529,6 +530,32 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             {
                 string msg = ex.Message;
             }
+        }        
+        private string IntToRoman(int num)
+        {
+            var result = string.Empty;
+            var map = new Dictionary<string, int>
+            {
+                {"M", 1000 },
+                {"CM", 900},
+                {"D", 500},
+                {"CD", 400},
+                {"C", 100},
+                {"XC", 90},
+                {"L", 50},
+                {"XL", 40},
+                {"X", 10},
+                {"IX", 9},
+                {"V", 5},
+                {"IV", 4},
+                {"I", 1}
+            };
+            foreach (var pair in map)
+            {
+                result += string.Join(string.Empty, Enumerable.Repeat(pair.Key, num / pair.Value));
+                num %= pair.Value;
+            }
+            return result;
         }
     }
 }

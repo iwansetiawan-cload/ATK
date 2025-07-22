@@ -19,6 +19,8 @@ namespace INVENTORYWeb.Models
         public string? RolesName { get; set; }
         [NotMapped]
         public string Role { get; set; }
+        public string? UserNameS1 { get; set; }
+        public string? UserIdS1 { get; set; }
         public int? Flag { get; set; }
 
     }
