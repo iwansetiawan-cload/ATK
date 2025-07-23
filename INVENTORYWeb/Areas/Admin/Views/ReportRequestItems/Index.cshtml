@@ -1,0 +1,170 @@
+﻿
+<div class="pcoded-content">
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Laporan</h5>
+                        <p class="m-b-0">Permintaan Barang</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-footer-title text-right">
+                        <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action=""> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Category" asp-action="">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+    <div class="pcoded-inner-content">
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+
+                <!-- Page body start -->
+                <div class="page-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Cari Data</h5>
+                                </div>
+                                <div class="card-block">
+                                    <form method="get">
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">No Transaksi</label>
+                                            <div class="col-sm-4">
+                                                <input name="no_transaksi" type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Nama Proyek</label>
+                                            <div class="col-sm-4">
+                                                <input name="nama_proyek" type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Status</label>
+                                            <div class="col-sm-2">
+                                                <select name="level" class="form-control">
+                                                    <option value="">All</option>
+                                                    <option>New Request</option>
+                                                    <option>Approve</option>
+                                                    <option>Rejected</option>
+                                                    <option>Process</option>
+                                                    <option>Complete</option>
+                                                    <option>Cancel</option>
+                                                </select>
+                                            </div>                                           
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <br />
+                                                <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-ui-search"></i>Cari</button>                                                
+                                                <NavLink type="button" href="admin-pengaturan" class="btn btn-primary waves-effect waves-light" data-placement="right" onclick="location.href=this.href;return true;"><i class="icofont icofont-ui-rotation"></i>Reset</NavLink>
+
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <br />
+                                                <div class="task-board m-0">
+                                                    <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-download-alt"></i>Download</button>
+                                                </div>
+                                               
+                                               @*  <div class="nav-item nav-grid">
+                                                    <div class="tool-box">
+
+                                                        <div class="nav-item nav-grid">
+                                                            <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10 f-left" asp-action="Upsert" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                                                <i class="icofont icofont-download-alt"></i>
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div> *@
+                                            </div>
+
+                                        </div>
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-block">                                 
+                                    <div class="dt-responsive table-responsive">
+                                        <table id="no-style" class="table table-striped table-bordered nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>No Transaksi</th>
+                                                    <th>Nama Proyek</th>
+                                                    <th>Tanggal Permintaan</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead> 
+                                        </table>
+                                    </div>                                 
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- Page body end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* @section Scripts {
+
+    <script src="~/js/index_report_request_items.js"></script>
+}
+ *@
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            loadData();
+        });
+
+        function loadData() {
+          
+            dataTable = $('#no-style').DataTable({
+                "order": [[0, "desc"]],
+                "bFilter": false,
+                "ajax": {
+                    "url": "/Admin/ReportRequestItems/GetAll"
+                },
+                "columns": [
+                    { "data": "transaction_number", "autoWidth": true },
+                    { "data": "project_name", "autoWidth": true },
+                    { "data": "request_date", "autoWidth": true },
+                    { "data": "notes", "autoWidth": true },
+                    { "data": "status", "autoWidth": true }                  
+                ]
+                
+            });
+        }
+     
+
+    </script>
+
+}

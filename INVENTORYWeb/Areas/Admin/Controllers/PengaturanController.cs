@@ -47,18 +47,31 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAllUserS1()
         {
-            FormDto<IList<UserProfileViewModel>> result = GetAllUserProfile();
-            var datalist = (from z in result.Data
-                            select new
-                            {
-                                id = z.Id,
-                                firstname = z.FirstName,
-                                lastname = z.LastName,
-                                nik = z.NIK,
-                                phone = z.PhoneNumber,
-                            }).ToList();
+            try
+            {
+                FormDto<IList<UserProfileViewModel>> result = GetAllUserProfile();
+                if (result != null)
+                {
+                    var datalist = (from z in result.Data
+                                    select new
+                                    {
+                                        id = z.Id,
+                                        firstname = z.FirstName,
+                                        lastname = z.LastName,
+                                        nik = z.NIK,
+                                        phone = z.PhoneNumber,
+                                    }).ToList();
 
-            return Json(new { data = datalist });
+                    return Json(new { data = datalist });
+                }
+                return Json(new { data = Empty });
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Cek Api User Profile S1";
+                return Json(new { data = Empty });
+            }
+            
         }
         public IActionResult Upsert(string id) 
         {           

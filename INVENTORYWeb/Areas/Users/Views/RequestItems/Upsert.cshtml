@@ -61,66 +61,44 @@
                                         }                                   
                                        
                                     </div>
+
+
                                     <div class="card-block">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group row pt-2">
 
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label> <span style="color: red">*</span>
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Nama Project <span style="color: red">*</span></label>
+                                                        <div class="col-sm-9">
+                                                            <div class="input-group input-group-button">
+                                                                <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" id="Show_projectName" disabled />
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#lookupProjectName" type="button"><i class="fa fa-binoculars"></i></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="col-9">
-                                                                <div class="input-group input-group-button">
-                                                                    <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" id="Show_projectName" disabled />
-                                                                    <div class="input-group-append">
-                                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#lookupProjectName" type="button"><i class="fa fa-binoculars"></i></button>
-                                                                    </div>
-                                                                </div>                                                              
-                                                            </div>
-
                                                         </div>
-
                                                     </div>
-
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
-                                                            </div>
-                                                            <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" />
-                                                                <span asp-validation-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="text-danger"></span>
-                                                            </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label" asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
+                                                        <div class="col-sm-9">
+                                                            <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap" id="Notes"></textarea>
+                                                            <span asp-validation-for="REQUEST_ITEM_HEADER.NOTES" class="text-danger"></span>
                                                         </div>
-
                                                     </div>
                                                 </div>
-                                                <div class="form-group row pt-2">
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
-                                                            </div>
-                                                            <div class="col-9">
-                                                                <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap"></textarea>
-                                                                <span asp-validation-for="REQUEST_ITEM_HEADER.NOTES" class="text-danger"></span>
-                                                            </div>
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label" asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
+                                                        <div class="col-sm-9">
+                                                            <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" id="RequestDate" />
+                                                            <span asp-validation-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="text-danger"></span>
                                                         </div>
-
                                                     </div>
-
+                                               
                                                 </div>
-
-
                                             </div>
-                                        </div>
-                                       
-
-                                        <div class="col-12 border-bottom">
-                                            <h1 class="text-primary"></h1>
-                                        </div>                                  
+                                        </div>                                   
 
                                         <div class="card-block">
                                             <input type="hidden" value="REQUEST_ITEM_DETAIL.ID" id="idItem" />
@@ -223,15 +201,17 @@
                                 </div>
 
                                 <div class="row text-center">
-                                    <div class="col-sm-12 invoice-btn-group text-center">
-                                        <button type="submit" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20"><i class="icofont icofont-save"></i>Simpan</button>
+                                    <div class="col-sm-12 invoice-btn-group text-center">                                       
+                                       
                                         @if (Model.REQUEST_ITEM_HEADER.ID != 0)
                                         {
+                                            <button type="submit" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20"><i class="icofont icofont-save"></i>Simpan</button>
                                             <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
                                      @*        <button class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button> *@
                                         }
                                         else
                                         {
+                                            <button type="button" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" onclick="SaveData()"><i class="icofont icofont-save"></i>Simpan</button>
                                             <a type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" asp-action="Index"><i class="icofont icofont-ui-close"></i>Batal</a>
                                         }
                                         
@@ -328,7 +308,27 @@
     </div>
 </div>
 
+@* <div class="md-modal md-effect-1" id="modal-confirmasi">
+    <div class="md-content">
+        <h3 class="f-26">Selesaikan Transaksi Anda!</h3>
+        <div>
+            <form method="post">
+                <div class="form-material">
+                    <div class="form-group form-primary">
+                        
+                    </div>
 
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary waves-effect m-r-20 f-w-600 d-inline-block save_btn"><i class="icofont icofont-save"></i>Simpan</button>
+                    <button type="button" class="btn btn-danger waves-effect md-close"><i class="icofont icofont-ui-close"></i>Close</button>
+                </div>
+            </form>
+         
+
+        </div>
+    </div>
+</div> *@
 @section Scripts {
      
     <script type="text/javascript">     
@@ -340,6 +340,7 @@
         });       
 
         function loadDataMasterItem() {
+           
             var url = "@Url.Action("GetAllMasterItems", "RequestItems", new { Area = "Users" })";
             dataTable = $('#tblDataMasterItems').DataTable({
                 "ajax": {
@@ -362,6 +363,7 @@
             });
         }
         function select_row(obj) {
+            // $('#stock').focus();
             var Item = $('td', obj).eq(0).html().trim();
             var Satuan = $('td', obj).eq(1).html().trim();
             var Isi = $('td', obj).eq(2).html().trim();
@@ -371,8 +373,9 @@
             $('#satuan').val(Satuan);
             $('#isi').val(Isi);
             $('#idItem').val(Id);
+           
         }
-
+       
         function loadDataMasterProject() {
             var url = "@Url.Action("GetAllMasterProject", "RequestItems", new { Area = "Users" })";
             dataTable = $('#tblDataMasterProject').DataTable({
@@ -513,56 +516,53 @@
 
         }
 
-        // function SaveData(id) {
-        //     var status = 'Approve';
-        //     var url = "/Admin/RequestApproval/ValApproveHeader";
-        //     $.ajax({
-        //         type: "GET",
-        //         url: url,
-        //         data: {
-        //             "id": id,
-        //             "status": status
-        //         },
-        //         success: function (data) {
+        function SaveData() {
+            var url = "@Url.Action("Create", "RequestItems", new { Area = "Users" })";
+            swal({
+                title: "Apakah Anda ingin melanjutkan permintaan ini?",
+                text: "Permintaan Anda hanya dilakukan satu bulan sekali.",
+                type: "warning",
+                icon: "success",
+                showCancelButton: true,
+                reverseButtons: true
+            },
+                function () {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            "projectname": $("#Show_projectName").val(),
+                            "notes": $("#Notes").val(),
+                            "requestdate": $("#RequestDate").val(),
+                            "totalqty": $("#TotalQty").val()
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                // swal("Permintaan Barang!", data.message, "success");
 
-        //             if (data.success) {
-        //                 new PNotify({
-        //                     title: 'Informasi',
-        //                     text: data.message,
-        //                     icon: 'icofont icofont-info-square',
-        //                     type: 'info'
-        //                 });
-
-        //             }
-        //             else {
-        //                 var urls = "/Admin/RequestApproval/ApproveHeader/" + id;
-        //                 swal({
-        //                     title: "Apakah Anda yakin ingin Menyetujui?",
-        //                     icon: "success",
-        //                     showCancelButton: true,
-        //                     reverseButtons: true
-        //                 },
-        //                     function () {
-        //                         $.ajax({
-        //                             type: "POST",
-        //                             url: urls,
-        //                             success: function (data) {
-        //                                 if (data.success) {
-        //                                     swal("Approve!", data.message, "success");
-        //                                     $("#curent_status").val(data.status);
-        //                                 }
-        //                                 else {
-        //                                     swal("Approve!", data.message, "error");
-        //                                 }
-        //                                 dataTable.ajax.reload();
-        //                             }
-        //                         });
-        //                     });
-        //             }
-
-        //         }
-        //     });
-        // }
+                                var url = window.location.href;
+                                if (url.indexOf('?') > -1) {
+                                    url += '&id=' + data.id
+                                } else {
+                                    url += '?id=' + data.id
+                                }
+                                window.location.href = url;
+                            }
+                            else {                               
+                                $(document).ready(function () {
+                                    new PNotify({
+                                        title: 'Information ',
+                                        text: data.message,
+                                        icon: 'icofont icofont-info-square',
+                                        type: 'info'
+                                    });
+                                });
+                            }
+                           
+                        }
+                    });
+                });
+        }
 
     </script>
 

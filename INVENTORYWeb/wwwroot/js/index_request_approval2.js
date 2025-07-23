@@ -22,6 +22,7 @@ $(document).ready(function () {
 /*var urls = "@Url.Action("GetAll", "ApprovelRequest", new { Area = "Admin" })" ;*/
 function loadDataTable(url) {
     dataTable = $('#tblData').DataTable({
+        "order": [[0, "desc"]],
         "ajax": {
             "url": "/Admin/RequestApproval/" + url
             

@@ -34,62 +34,10 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
-        {
-            //string id = "DE337D05-4924-4F42-97F4-758B7ECB48A8";
-            //GetPRHeader(id);
-
-            //PurchaseRequestHeaderViewModel obj = new PurchaseRequestHeaderViewModel();
-            //obj.Id = "edf24db4-8498-4f5c-b278-5f7fb526965b";
-            //obj.timestamp = DateTime.Now;
-            //obj.actor = null;
-            //obj.DocumentNumber = "PR/ATK/0725/RDS";
-            //obj.CreatedDate = DateTime.Now;
-            //obj.DeadlineDate = DateTime.Now;
-            //obj.ProjectName = "ATK";
-            //obj.Company = "RDS";
-            //obj.Description = "Tes Post APP";
-            //obj.IsCancel = 0;
-            //obj.UserProfileId = "8d3707f2-4aee-42c3-83b0-e25182cada94";
-            //obj.ApproverId = "edf24db4-8498-4f5c-b278-5f7fb526965b";
-            //PostPRHeader(obj);
+        {            
             return View();
         }
-        //public List<PurchaseRequestDetailViewModel> GetPRDetailList(string? id)
-        //{
-        //    try
-        //    {
-        //        PurchaseRequestDetailViewModel result = new PurchaseRequestDetailViewModel();
-        //        var ApiUrl = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "URL_API").FirstOrDefault();
-        //        string query = "purchase_request/Get_Header_ById?id=" + id;
-        //        string URL = query;
-
-        //        using (var client = new HttpClient())
-        //        {
-
-        //            client.BaseAddress = new Uri(ApiUrl.ToString());
-        //            client.DefaultRequestHeaders.Clear();
-        //            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //            var task = Task.Run(() => client.GetAsync(URL));
-        //            task.Wait();
-        //            var Res = task.Result;
-
-        //            if (Res.IsSuccessStatusCode)
-        //            {
-        //                var ListData = Res.Content.ReadAsStringAsync().Result;
-        //                result = JsonConvert.DeserializeObject<List<PurchaseRequestDetailViewModel>>(ListData);
-        //                return result;
-        //            }
-        //        }
-        //        return null;
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        return null;
-        //    }
-
-        //}
+        
         [HttpGet]
         public IActionResult GetAll(string status)
         {
@@ -198,13 +146,11 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     ApplicationId = user.Id,
                     AuditTrailId = Guid.Empty
                 };
-                SaveAuditTrail(auditTrailInfo);
-                TempData["Success"] = "Successfully approved";
+                SaveAuditTrail(auditTrailInfo);                
                 return Json(new { success = true, message = "Approved Successful" , status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
-            {
-                TempData["error"] = "Error approved";
+            {                
                 return Json(new { success = false, message = "Approved Error"});
             }
 
@@ -269,13 +215,10 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     AuditTrailId = Guid.Empty
                 };
                 SaveAuditTrail(auditTrailInfo);
-
-                TempData["Success"] = "Successfully Reject";
                 return Json(new { success = true, message = "Reject Successful", status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
             {
-                TempData["Failed"] = "Error Reject";
                 return Json(new { success = false, message = "Reject Error" });
             }
 
@@ -325,14 +268,11 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     ApplicationId = user.Id,
                     AuditTrailId = Guid.Empty
                 };
-                SaveAuditTrail(auditTrailInfo);
-               
-                TempData["Success"] = "Successfully approved";
+                SaveAuditTrail(auditTrailInfo);               
                 return Json(new { success = true, message = "Approved Successful", status = status?.TEXT1 ?? string.Empty });
             }
             catch (Exception)
             {
-                TempData["Failed"] = "Error approved";
                 return Json(new { success = false, message = "Approved Error" });
             }
 
@@ -384,7 +324,6 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     AuditTrailId = Guid.Empty,
                 };
                 SaveAuditTrail(auditTrailInfo);
-                TempData["Success"] = "Successfully Reject";
                 if (requestItemDetailList.Count == 0)
                     return Json(new { success = true, message = "Reject Successful", status = status?.TEXT1 ?? string.Empty });
                 else
@@ -392,7 +331,6 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             }
             catch (Exception)
             {
-                TempData["Failed"] = "Error Reject";
                 return Json(new { success = false, message = "Reject Error" });
             }
 
@@ -440,7 +378,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 }
                 if (string.IsNullOrEmpty(user.UserIdS1))
                 {
-                    TempData["error"] = "Mohon setup user pengaturan ke user S1";
+                    TempData["Information"] = "Mohon setup user pengaturan ke user S1";
                     return View(vm);
                 }
 
