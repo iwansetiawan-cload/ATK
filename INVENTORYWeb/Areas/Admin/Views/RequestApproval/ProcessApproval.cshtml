@@ -31,7 +31,7 @@
                 <div class="col-md-8">
                     <div class="page-header-title">
                         <h5 class="m-b-10">Transaksi</h5>
-                        <p class="m-b-0">List Permintaan Barang</p>
+                        <p class="m-b-0">@title</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -56,13 +56,6 @@
                         <div class="row">
                             <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" id="IdHeader" />                            
                             <input type="hidden" asp-for="GetIdTemp" />
-
-                            @* @if (Model.REQUEST_ITEM_HEADER.ID != 0)
-                            {
-                                title = "Approval";
-                                <input type="hidden" asp-for="REQUEST_ITEM_HEADER.ID" />                                
-
-                            } *@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -84,9 +77,9 @@
                                                         {
                                                             <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
                                                         }                  
-                                                    </div>                                                   
-                                                    <span class="f-left m-r-5 text-inverse">Status :                                                       
-                                                        <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />
+                                                    </div>
+                                                    <span class="f-left m-r-5 text-inverse">Status : 
+                                                        <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />                                                        
                                                     </span>                                                   
                                                
                                                     
@@ -176,7 +169,6 @@
                                             </div>
                                         </div>
 
-
                                         <div class="card-block">
                                             <div class="row">
                                                 <div class="col-sm-12">
@@ -186,7 +178,6 @@
                                                                 <th>Jumlah Permintaan :</th>
                                                                 <td style="min-width:10px">@Model.REQUEST_ITEM_HEADER.TOTAL_QTY</td>
                                                             </tr>
-
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -220,48 +211,6 @@
 
                         </div>
                     </form>
-
-                   @*  <div class="md-modal md-effect-13 addcontact" id="modal-adjust">
-                        <div class="md-content">
-                            <h3 class="f-26">Keterangan</h3>
-                            <div class="form-material">
-
-                                <div class="material-group">
-                                    <div class="form-group form-primary">                                
-                                        <textarea asp-for="REQUEST_ITEM_HEADER.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectHeader_note"></textarea>
-                                        <span class="form-bar"></span>                                        
-                                    </div>
-                                </div>
-                          
-
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectHeader(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
-                                    <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div> *@
-                   @*  <div class="md-modal md-effect-13 addcontact" id="modal-detail">
-                        <div class="md-content">
-                            <h3 class="f-26">Keterangan</h3>
-                            <div class="form-material">
-
-                                <div class="material-group">
-                                    <div class="form-group form-primary">
-                                        <textarea asp-for="REQUEST_ITEM_DETAIL.REJECTED_NOTES" class="form-control" style="row-gap" id="rejectDetail_note"></textarea>
-                                        <span class="form-bar"></span>
-                                    </div>
-                                </div>
-
-
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-primary waves-effect m-r-20 f-w-600 md-close d-inline-block save_btn" onclick="RejectDetail(@Model.REQUEST_ITEM_HEADER.ID)"><i class="icofont icofont-save"></i>Reject</button>
-                                    <button type="button" class="btn btn-danger waves-effect m-r-20 f-w-600 md-close d-inline-block close_btn"><i class="icofont icofont-ui-close"></i>Batal</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-overlay"></div> *@
 
                 </div>
             </div>

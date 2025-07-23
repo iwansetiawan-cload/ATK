@@ -87,3 +87,23 @@
             });
     </script>
 }
+
+@if (TempData["ErrorProcess"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        @*  toastr.error('@TempData["error"]'); *@
+            $(document).ready(function () {
+                new PNotify({
+                    title: 'Error Process ',
+                    text: '@TempData["ErrorProcess"]',
+                    icon: 'icofont icofont-info-circle',
+                    type: 'error'
+                });
+            });
+
+
+    </script>
+}

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using Microsoft.IdentityModel.Tokens;
 
 namespace INVENTORYWeb.Areas.Admin.Controllers
 {
@@ -50,25 +51,24 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
             try
             {
                 FormDto<IList<UserProfileViewModel>> result = GetAllUserProfile();
-                if (result != null)
-                {
-                    var datalist = (from z in result.Data
-                                    select new
-                                    {
-                                        id = z.Id,
-                                        firstname = z.FirstName,
-                                        lastname = z.LastName,
-                                        nik = z.NIK,
-                                        phone = z.PhoneNumber,
-                                    }).ToList();
+                if (result == null)
+                    return Json(new { data = Empty });
 
-                    return Json(new { data = datalist });
-                }
-                return Json(new { data = Empty });
+                var datalist = (from z in result.Data
+                                select new
+                                {
+                                    id = z.Id,
+                                    firstname = z.FirstName,
+                                    lastname = z.LastName,
+                                    nik = z.NIK,
+                                    phone = z.PhoneNumber,
+                                }).ToList();
+
+                return Json(new { data = datalist });
+
             }
             catch (Exception)
             {
-                TempData["error"] = "Cek Api User Profile S1";
                 return Json(new { data = Empty });
             }
             

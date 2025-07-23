@@ -402,6 +402,12 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     };
                     FormDto<PurchaseRequestHeaderViewModel> dtoPostPRHeader = PostPRHeader(body);
 
+                    if (dtoPostPRHeader == null)
+                    {
+                        TempData["ErrorProcess"] = "Cek api purchase request header S1.";
+                        return View(vm);
+                    }
+
                     if (dtoPostPRHeader.Success)
                     {
 
@@ -415,6 +421,19 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                         _unitOfWork.Save();
                         TempData["Process"] = "Process Successfully";
                     }
+
+                    AuditTrailInfo auditTrailInfo = new()
+                    {
+                        UserName = user.Name,
+                        ModuleName = "RequestApproval/ProcessApproval",
+                        TransactionId = requestItemHeader.ID,
+                        ActionName = status?.TEXT1 ?? string.Empty,
+                        OtherInfo = string.Empty,
+                        AuditTrailType = status?.INUM1 ?? 0,
+                        ApplicationId = user.Id,
+                        AuditTrailId = Guid.Empty
+                    };
+                    SaveAuditTrail(auditTrailInfo);
 
                     #region Post Detail
                     List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z => z.HEADER_ID == requestItemHeader.ID && z.STATUS == "Approve").ToList();
@@ -434,6 +453,12 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                             PurchaseRequestHeaderId = dtoPostPRHeader?.Data?.Id
                         };
                         FormDto<PurchaseRequestDetailViewModel> dtoPostPRDetail = PostPRDetail(bodyDetail);
+
+                        if (dtoPostPRDetail == null)
+                        {
+                            TempData["ErrorProcess"] = "Cek api purchase request detail S1.";
+                            return View(vm);
+                        }
 
                         requestItemDetail.STATUS_ID = status?.INUM1;
                         requestItemDetail.STATUS = status?.TEXT1;
@@ -456,26 +481,13 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     _unitOfWork.Save();
 
                     #endregion
-
-                    AuditTrailInfo auditTrailInfo = new()
-                    {
-                        UserName = user.Name,
-                        ModuleName = "RequestApproval/ProcessApproval",
-                        TransactionId = requestItemHeader.ID,
-                        ActionName = status?.TEXT1 ?? string.Empty,
-                        OtherInfo = string.Empty,
-                        AuditTrailType = status?.INUM1 ?? 0,
-                        ApplicationId = user.Id,
-                        AuditTrailId = Guid.Empty
-                    };
-                    SaveAuditTrail(auditTrailInfo);
-
+                                        
                 }
             }
             catch (Exception ex)
             {
                 string message = ex.Message;
-                TempData["error"] = "Error Process";             
+                TempData["ErrorProcess"] = "Error Process " + ex.Message.ToString();             
             }
 
             return RedirectToAction(nameof(ProcessApproval), new { id = vm.REQUEST_ITEM_HEADER.ID });
