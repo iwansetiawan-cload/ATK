@@ -64,7 +64,11 @@
                                         <div class="nav-item nav-grid">
                                             <div class="tool-box">
                                                 <div class="dropdown-secondary dropdown f-right">
-                                                    <span class="f-left m-r-5 text-inverse">No Transaksi : <strong class="text-inverse" style="font-weight: bold">@Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp;</strong></span>
+                                                    <span class="f-left m-r-5 text-inverse">No Transaksi : 
+                                                        <strong class="text-inverse" style="font-weight: bold">
+                                                           @*  @Model.REQUEST_ITEM_HEADER.REQUEST_ORDER_NO &nbsp;&nbsp; *@
+                                                            <input class="m-r-5 text-inverse" style="border: none;width:135px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.REQUEST_ORDER_NO" readonly />
+                                                        </strong></span>
                                                     <button class="btn btn-info btn-mini dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-navigation-menu"></i></button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                                         @if (status != "Process" && status != "Complete")
@@ -77,11 +81,10 @@
                                                         {
                                                             <a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory($('#IdHeader').val()) data-toggle="modal" data-target="#lookupHostory"><i class="icofont icofont-history"></i> History</a>
                                                         }                  
-                                                    </div>
-                                                    <span class="f-left m-r-5 text-inverse">Status : 
-                                                        <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />                                                        
-                                                    </span>                                                   
-                                               
+                                                    </div>                                                  
+                                                    <span class="f-left m-r-5 text-inverse">Status :
+                                                        <input class="m-r-5 text-inverse" style="border: none;width:90px;font-weight: bold" asp-for="REQUEST_ITEM_HEADER.STATUS" id="curent_status" readonly />                                                       
+                                                    </span>
                                                     
                                                 </div>
                                                
@@ -370,6 +373,9 @@
                         href += '<div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">';
 
                         href += '<a class="dropdown-item waves-light waves-effect" onclick=loadDataHistory("' + data["id"] + '") data-toggle="modal" data-target="#lookupHostory" type="button"><i class="icofont icofont-history"></i> History</a>';
+                        if (status_header == "Process" && data["status"] == 'New Request') {
+                            href += '<a class="dropdown-item waves-light waves-effect" onclick=ResendProcess("' + data["id"] + '") type="button"><i class="ti-layout-media-right"></i> Process</a>';
+                        }
                         href += '</div>';
                         href += '</div>';
                         $('td', row).eq(7).html(href);
@@ -580,9 +586,7 @@
                   
                 }
             });
-
-
-            
+                        
         }
         function RejectDetail(id) {
 
@@ -692,7 +696,32 @@
             });
         }
 
-        
+        function ResendProcess(id) {
+            var urls = "/Admin/RequestApproval/ResendProcessDetail/" + id;
+            swal({
+                title: "Apakah Anda yakin ingin process barang ini?",
+                icon: "success",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                type: "warning"
+            },
+                function () {
+                    $.ajax({
+                        type: "POST",
+                        url: urls,
+                        success: function (data) {
+                            if (data.success) {
+                                swal("Process!", data.message, "success");                             
+                            }
+                            else {
+                                swal("Process!", data.message, "error");
+                            }
+                            dataTable.ajax.reload();
+                        }
+                    });
+                });
+
+        }
     </script>
 
 }

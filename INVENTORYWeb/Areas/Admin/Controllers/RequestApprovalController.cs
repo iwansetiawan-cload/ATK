@@ -743,6 +743,81 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
 
         }
         #endregion
+
+        [HttpPost]
+        public IActionResult ResendProcessDetail(long id)
+        {
+            try
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+                var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 5).FirstOrDefault();
+
+                REQUEST_ITEM_DETAIL? requestItemDetail = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z=>z.ID == id).FirstOrDefault();
+
+                if (requestItemDetail == null)
+                {
+                    return Json(new { success = false, message = "Data tidak ditemukan" });
+                }
+                if (requestItemDetail.STATUS_ID == status?.INUM1)
+                {
+                    return Json(new { success = false, message = "Status barang sudah di Process" });
+                }               
+                if (string.IsNullOrEmpty(user.UserIdS1))
+                {
+                    return Json(new { success = false, message = "Mohon setup user pengaturan ke user S1" });
+                }
+                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
+                PurchaseRequestDetailViewModel bodyDetail = new()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    timestamp = DateTime.Now,
+                    actor = null,
+                    ItemName = requestItemDetail.ITEM_NAME,
+                    ItemDescription = requestItemDetail.ITEMS.DESCRIPTION,
+                    ItemQuantity = requestItemDetail.QTY_ADJUST != null ? requestItemDetail.QTY_ADJUST : requestItemDetail.QTY,
+                    ItemUnit = requestItemDetail.CATEGORY,
+                    Brand = "",
+                    Spesification = requestItemDetail.ITEMS.DESCRIPTION,
+                    PurchaseRequestHeaderId = requestItemHeader?.S1_ID
+                };
+                FormDto<PurchaseRequestDetailViewModel> dtoPostPRDetail = PostPRDetail(bodyDetail);
+
+                if (dtoPostPRDetail == null)
+                {
+                    return Json(new { success = false, message = "Cek api purchase request detail S1." });
+                }
+
+                requestItemDetail.STATUS_ID = status?.INUM1;
+                requestItemDetail.STATUS = status?.TEXT1;
+                requestItemDetail.S1_ID = dtoPostPRDetail?.Data?.Id;
+                _unitOfWork.RequestItemDetail.Update(requestItemDetail);
+                _unitOfWork.Save();
+
+                AuditTrailInfo auditTrailInfoDetail = new()
+                {
+                    UserName = user.Name,
+                    ModuleName = "RequestApproval/ResendProcessDetail",
+                    TransactionId = requestItemDetail.ID,
+                    ActionName = status?.TEXT1 ?? string.Empty,
+                    OtherInfo = string.Empty,
+                    AuditTrailType = status?.INUM1 ?? 0,
+                    ApplicationId = user.Id,
+                    AuditTrailId = Guid.Empty,
+                };
+                SaveAuditTrail(auditTrailInfoDetail);
+                return Json(new { success = true, message = "Process Successful", status = status?.TEXT1 ?? string.Empty });
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return Json(new { success = false, message = "Error Process " });
+            }
+
+
+        }
     }
 }
 

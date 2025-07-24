@@ -6,7 +6,7 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Transaksi</h5>
+                        <h5 class="m-b-10">Home</h5>
                         <p class="m-b-0">Permintaan Barang</p>
                     </div>
                 </div>
@@ -15,8 +15,8 @@
                         <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action=""> <i class="fa fa-home"></i></a></li>
-                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Category" asp-action="">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-area="Users" asp-controller="RequestItems" asp-action="ListView"> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Users" asp-controller="RequestItems" asp-action="ListView">Home</a></li>
                     </ul>
                 </div>
             </div>
@@ -34,37 +34,36 @@
                             <nav class="navbar navbar-light bg-faded m-b-30 p-10">
                                 <ul class="nav navbar-nav">
                                     <li class="nav-item active">
-                                        <a class="nav-link" href="#!">Filter: <span class="sr-only">(current)</span></a>
+                                        <a class="nav-link">Filter: <span class="sr-only">(current)</span></a>
                                     </li>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#!" id="bydate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-clock-time"></i> By Date</a>
                                         <div class="dropdown-menu" aria-labelledby="bydate">
-                                            <a class="dropdown-item" href="#!">Show all</a>
-                                            @*  <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#!">Today</a>
-                                            <a class="dropdown-item" href="#!">Yesterday</a>
-                                            <a class="dropdown-item" href="#!">This week</a>
-                                            <a class="dropdown-item" href="#!">This month</a>
-                                            <a class="dropdown-item" href="#!">This year</a> *@
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView">Show all</a>
+                                             <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-date="month">This month</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-date="year">This year</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-date="lastMonth">Last month</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-date="lastYear">Last year</a>
                                         </div>
                                     </li>
                                     <!-- end of by date dropdown -->
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#!" id="bystatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icofont icofont-chart-histogram-alt"></i> By Status</a>
                                         <div class="dropdown-menu" aria-labelledby="bystatus">
-                                            <a class="dropdown-item" href="#!">Show all</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView">Show all</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#!">New Request</a>
-                                            <a class="dropdown-item" href="#!">Approve</a>
-                                            <a class="dropdown-item" href="#!">Rejected</a>
-                                            <a class="dropdown-item" href="#!">Process</a>
-                                            <a class="dropdown-item" href="#!">Complete</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-status="New Request">New Request</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-status="Approve">Approve</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-status="Rejected">Rejected</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-status="Process">Process</a>
+                                            <a class="dropdown-item" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-status="Complete">Complete</a>
                                         </div>
                                     </li>
 
                                 </ul>
                                 <div class="nav-item nav-grid">
-                                    <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10" asp-area="Users" asp-controller="RequestItems" asp-action="Upsert" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                    <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10" asp-area="Users" asp-controller="RequestItems" asp-action="Upsert" asp-route-view="true" data-toggle="tooltip" data-placement="top" title="tambah data">
                                         <i class="icofont icofont-plus m-r-5"></i>
                                     </a>
                                     <span class="m-r-15">View Mode: </span>
@@ -147,14 +146,19 @@
                                             </div>
                                             <div class="card-block">
                                                 <div class="row">
-                                                    <div class="col-sm-12">
+                                                    <div class="col-sm-8">
                                                         <ul class="list list-unstyled">
                                                             <li>Proyek: @obj.PROJECT_NAME</li>
                                                             <li>Tanggal: <span class="text-semibold">@obj.REQUEST_DATE.Value.ToString("dd/MM/yyyy")</span></li>
                                                             <li>Keterangan: <span class="text-semibold">@obj.NOTES</span></li>
                                                         </ul>
                                                     </div>
-                                                 
+                                                    <div class="col-sm-4">
+                                                        <ul class="list list-unstyled text-right">
+                                                            <li>Periode: <span class="text-semibold">@obj.REQUEST_DATE.Value.ToString("MMMM yyyy")</span></li>
+                                                        </ul>
+                                                    </div>
+                                              
                                                 </div>
                                             </div>  
                                             <div class="card-footer">
@@ -171,7 +175,7 @@
                                                     </div>
                                                 }
                                                 <div class="task-board m-0">
-                                                    <a asp-area="Users" asp-controller="RequestItems" asp-action="ViewApproval" asp-route-id="@obj.ID" class="btn btn-info btn-mini b-none"><i class="icofont icofont-eye-alt m-0"></i></a>
+                                                    <a asp-area="Users" asp-controller="RequestItems" asp-action="ViewApproval" asp-route-id="@obj.ID" asp-route-view="true" class="btn btn-info btn-mini b-none"><i class="icofont icofont-eye-alt m-0"></i></a>
                                                   
                                                     @if (@obj.STATUS == "New Request")
                                                     {
@@ -194,7 +198,56 @@
                             </div>
                         </div>
                     </div>
+                    <form method="post">
+                        <div class="card-block">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
 
+                                    @{
+                                        IEnumerable<int> pageNumbers = Enumerable.Range(1, (int)ViewBag.TotalPage).ToList();
+                                    }
+                                    @if (pageNumbers.Count() > 1)
+                                    {
+                                        @if ((int)ViewBag.currentPage > 1)
+                                        {
+                                            var previousPage = (int)ViewBag.currentPage - 1;
+                                            <li class="page-item">
+                                                <a class="page-link" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-pg="@previousPage">Previous</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item disabled">
+                                                <a class="page-link" tabindex="-1">Previous</a>
+                                            </li>
+                                        }
+
+                                        @foreach (var number in pageNumbers)
+                                        {
+                                            <li class="page-item @(number == (int)ViewBag.currentPage ? "active" : "")">
+                                                <a class="page-link" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-pg="@number">@number</a>
+                                            </li>
+                                        }
+
+                                        @if (pageNumbers.Count() > 1 && pageNumbers.Count() > (int)ViewBag.currentPage)
+                                        {
+                                            var nextPage = (int)ViewBag.currentPage + 1;
+                                            <li class="page-item">
+                                                <a class="page-link" asp-area="Users" asp-controller="RequestItems" asp-action="ListView" asp-route-pg="@nextPage">Next</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        }
+                                    }
+
+                                </ul>
+                            </nav>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

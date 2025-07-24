@@ -32,17 +32,42 @@ namespace INVENTORYWeb.Areas.Users.Controllers
         {
             return View();
         }
-        public IActionResult ListView()
+        public IActionResult ListView(string? status, string? date, int pg)
         {
+            pg = pg == 0 ? 1 : pg;
+            ViewBag.currentPage = pg;
+            int pageSize = 12;
+
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
 
             RequestItemsListViewModel vm = new()
             {
-                listData = _unitOfWork.RequestItemHeader.GetAll().Where(z => z.CREATE_BY == user.UserName && z.STATUS_ID >= 0)
+                listData = _unitOfWork.RequestItemHeader.GetAll().Where(z => z.CREATE_BY == user.UserName && z.STATUS_ID >= 0).OrderBy(z => z.REQUEST_DATE),
             };
 
+            if (!string.IsNullOrEmpty(status))
+                vm.listData = vm.listData.Where(z=>z.STATUS == status).ToList();
+
+            if(date == "month")
+                vm.listData = vm.listData.Where(z => z.REQUEST_DATE.Value.Year == DateTime.Now.Year && z.REQUEST_DATE.Value.Month == DateTime.Now.Month).ToList();
+
+            if (date == "year")
+                vm.listData = vm.listData.Where(z => z.REQUEST_DATE.Value.Year == DateTime.Now.Year).ToList();
+
+            if (date == "lastMonth")
+                vm.listData = vm.listData.Where(z => z.REQUEST_DATE.Value.Year == DateTime.Now.AddMonths(-1).Year && z.REQUEST_DATE.Value.Month == DateTime.Now.AddMonths(-1).Month).ToList();
+
+            if (date == "lastYear")
+                vm.listData = vm.listData.Where(z => z.REQUEST_DATE.Value.Year == DateTime.Now.AddYears(-1).Year).ToList();
+
+            int countNumber = vm.listData.Count();
+            double totalPage = Math.Ceiling(countNumber / (double)pageSize);
+            ViewBag.TotalPage = (int)totalPage;
+            var skip = (pg - 1) * pageSize;
+
+            vm.listData = vm.listData.Skip(skip).Take(pageSize).ToList();
             return View(vm);
         }
         [HttpGet]
@@ -89,7 +114,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             var allObj = await _unitOfWork.Items.GetAllAsync(includeProperties: "CATEGORY");          
             return Json(new { data = allObj });
         }
-        public IActionResult Upsert(long? id)
+        public IActionResult Upsert(long? id, bool view)
         {
             var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
             ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
@@ -107,12 +132,15 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
 
-                REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.GetAll().Where(z=> z.CREATE_BY == user.UserName && z.REQUEST_DATE.Value.Year == DateTime.Now.Year && z.REQUEST_DATE.Value.Month == DateTime.Now.Month).FirstOrDefault();
-                //if (rEQUEST_ITEM_HEADER != null)
-                //{
-                //    TempData["Information"] = "Anda sudah melakukan permintaan barang di bulan ini..!";
-                //    return RedirectToAction(nameof(Index));
-                //}
+                REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.GetAll().Where(z=> z.CREATE_BY == user.UserName && z.STATUS_ID >= 0 && z.REQUEST_DATE.Value.Year == DateTime.Now.Year && z.REQUEST_DATE.Value.Month == DateTime.Now.Month).FirstOrDefault();
+                if (rEQUEST_ITEM_HEADER != null)
+                {
+                    TempData["Information"] = "Anda sudah melakukan permintaan barang di bulan ini..!";
+                    if(view)
+                        return RedirectToAction(nameof(ListView));
+                    else
+                        return RedirectToAction(nameof(Index));
+                }
                 return View(vm);
             }
             else
@@ -284,8 +312,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             return View(obj);
         }
 
-        [HttpPost]
-        
+        [HttpPost]        
         public async Task<IActionResult> Create(string? projectname, string? notes, DateTime? requestdate, int? totalqty)
         {
             try
@@ -420,8 +447,9 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             TempData["Success"] = "Hapus Berhasil";
             return Json(new { success = true, message = "Hapus Berhasil" });
         }       
-        public IActionResult ViewApproval(long? id)
+        public IActionResult ViewApproval(long? id, bool view)
         {
+            ViewBag.View = view;
             AddListItems = new List<REQUEST_ITEM_DETAIL>();
             RequestItemHeaderViewModel vm = new()
             {
@@ -430,7 +458,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                     REQUEST_DATE = DateTime.Now,
                 },
                 REQUEST_ITEM_DETAIL = new(),
-            };
+            };           
             if (id == null || id == 0)
             {
                 return View(vm);
@@ -569,7 +597,13 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
                 var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 3).FirstOrDefault();
 
-                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(id);
+                REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(id);                
+
+                if (requestItemHeader.STATUS_ID == status?.INUM1)
+                {
+                    TempData["Information"] = "Status sudah Complete..!";
+                    return Json(new { success = false, message = "Status sudah Complete..!" });
+                }
                 requestItemHeader.STATUS_ID = status?.INUM1;
                 requestItemHeader.STATUS = status?.TEXT1;
                 requestItemHeader.COMPLETED_BY = user.UserName;
@@ -615,12 +649,12 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 };
                 SaveAuditTrail(auditTrailInfo);
                 TempData["Success"] = "Successfully Completed";
-                return Json(new { success = true, message = "Approved Completed" });
+                return Json(new { success = true, message = "Process Completed" });
             }
             catch (Exception)
             {
                 TempData["Failed"] = "Error Completed";
-                return Json(new { success = false, message = "Completed Error" });
+                return Json(new { success = false, message = "Process Error" });
             }
 
         }

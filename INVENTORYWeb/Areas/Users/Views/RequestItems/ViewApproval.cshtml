@@ -191,14 +191,26 @@
                                     </div>
 
                                 </div>
+                                @if (@ViewBag.View)
+                                {
+                                    <div class="row text-center">
+                                        <div class="col-sm-12 invoice-btn-group text-center">
+                                            <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-area="Users" asp-controller="RequestItems" asp-action="ListView"><i class="icofont icofont-undo"></i>Kembali</button>
 
-                                <div class="row text-center">
-                                    <div class="col-sm-12 invoice-btn-group text-center">
-                                        <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
+                                        </div>
 
                                     </div>
+                                }else
+                                {
+                                    <div class="row text-center">
+                                        <div class="col-sm-12 invoice-btn-group text-center">
+                                            <button class="btn waves-effect waves-light btn-inverse m-b-10 btn-sm" asp-area="Users" asp-controller="RequestItems" asp-action="Index"><i class="icofont icofont-undo"></i>Kembali</button>
 
-                                </div>
+                                        </div>
+
+                                    </div>
+                                }
+
                             </div>
 
                             <!-- Page body end -->
@@ -304,12 +316,14 @@
                     },
                     success: function (data) {
                         if (data.success) {
-                            swal("Complated!", data.message, "success");
+                            // swal("Complated!", data.message, "success");
+                            window.location.reload(true);
                         }
                         else {
                             swal("Complated!", data.message, "error");
                         }
-                        dataTable.ajax.reload();
+                        // dataTable.ajax.reload();
+                        
                     }
                 });
             });

@@ -113,6 +113,10 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
             public string Name { get; set; }
             [Required(ErrorMessage = "Nama Lengkap harus diisi ")]
             public string FullName { get; set; }
+            [Phone]
+            [Display(Name = "No Telepon")]
+            public string PhoneNumber { get; set; }
+
             public string Role { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
@@ -150,6 +154,7 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
                     UserName = Input.Name,
                     Name = Input.Name,
                     FullName = Input.FullName,
+                    PhoneNumber = Input.PhoneNumber,
                     Role = Input.Role,
                     RolesName = Input.Role ?? OI.Role_User,
                     Flag = 0
@@ -205,7 +210,14 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
                 }
                 
             }
-
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }).OrderByDescending(x => x.Value)
+            };
             // If we got this far, something failed, redisplay form
             return Page();
         }

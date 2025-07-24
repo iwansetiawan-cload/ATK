@@ -1,4 +1,5 @@
-﻿
+﻿@model INVENTORYWeb.Models.ViewModels.ReportRequestItemsViewModel
+
 <div class="pcoded-content">
     <div class="page-header">
         <div class="page-block">
@@ -41,41 +42,36 @@
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">No Transaksi</label>
                                             <div class="col-sm-4">
-                                                <input name="no_transaksi" type="text" class="form-control">
+                                                <input type="text" asp-for="searchRequestNumber" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">Nama Proyek</label>
                                             <div class="col-sm-4">
-                                                <input name="nama_proyek" type="text" class="form-control">
+                                                <input type="text" asp-for="searchProjectName" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">Status</label>
-                                            <div class="col-sm-2">
-                                                <select name="level" class="form-control">
-                                                    <option value="">All</option>
-                                                    <option>New Request</option>
-                                                    <option>Approve</option>
-                                                    <option>Rejected</option>
-                                                    <option>Process</option>
-                                                    <option>Complete</option>
-                                                    <option>Cancel</option>
+                                            <div class="col-sm-4">
+                                                <select asp-for="searchStatus" asp-items="@ViewBag.listStatus" class="form-control form-select">
+                                                    <option selected value="">All</option>
                                                 </select>
-                                            </div>                                           
+                                            </div> 
+                                      
 
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-sm-6">
                                                 <br />
                                                 <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-ui-search"></i>Cari</button>                                                
-                                                <NavLink type="button" href="admin-pengaturan" class="btn btn-primary waves-effect waves-light" data-placement="right" onclick="location.href=this.href;return true;"><i class="icofont icofont-ui-rotation"></i>Reset</NavLink>
+                                                <a type="button" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="" class="btn btn-primary waves-effect waves-light" data-placement="right"><i class="icofont icofont-ui-rotation"></i>Reset</a>
 
                                             </div>
                                             <div class="col-sm-6">
                                                 <br />
                                                 <div class="task-board m-0">
-                                                    <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-download-alt"></i>Download</button>
+                                                    <button type="button" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-download-alt"></i>Download</button>
                                                 </div>
                                                
                                                @*  <div class="nav-item nav-grid">
@@ -116,7 +112,38 @@
                                                     <th>Keterangan</th>
                                                     <th>Status</th>
                                                 </tr>
-                                            </thead> 
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.listData != null)
+                                                {
+                                                    @foreach (var item in Model.listData)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @item.REQUEST_ORDER_NO
+                                                            </td>
+                                                            <td>
+                                                                @item.PROJECT_NAME
+                                                            </td>
+                                                            <td>
+                                                                @if (@item!.REQUEST_DATE!.HasValue)
+                                                                {
+                                                                    @item.REQUEST_DATE.Value.ToString("yyyy-MM-dd")
+                                                                }
+
+                                                            </td>                                                           
+                                                            <td>
+                                                                @item.NOTES
+                                                            </td>
+                                                            <td>
+                                                                @item.STATUS
+                                                            </td>                                                           
+                                                        </tr>
+                                                    }
+                                                }
+
+
+                                            </tbody>
                                         </table>
                                     </div>                                 
                                 </div>
@@ -138,7 +165,7 @@
     <script src="~/js/index_report_request_items.js"></script>
 }
  *@
-@section Scripts {
+@* @section Scripts {
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -167,4 +194,4 @@
 
     </script>
 
-}
+} *@
