@@ -63,9 +63,9 @@
 
                                 </ul>
                                 <div class="nav-item nav-grid">
-                                    <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10" asp-area="Users" asp-controller="RequestItems" asp-action="Upsert" asp-route-view="true" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                    <button type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10" onclick="ValAdd()" data-toggle="tooltip" data-placement="top" title="tambah data">
                                         <i class="icofont icofont-plus m-r-5"></i>
-                                    </a>
+                                    </button>
                                     <span class="m-r-15">View Mode: </span>
 
                                     <a type="button" class="btn btn-sm btn-primary waves-effect waves-light" asp-area="Users" asp-controller="RequestItems" asp-action="Index" data-toggle="tooltip" data-placement="top" title="grid view">
@@ -258,7 +258,6 @@
 
 @section Scripts {
 
-
     <script type="text/javascript">       
 
         function AddCompleted(id) {
@@ -325,6 +324,28 @@
                 });
             });
 
+        }
+                
+        function ValAdd() {
+            var url = "@Url.Action("ValidationCreateNew", "RequestItems", new { Area = "Users" })";
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Information ',
+                            text: data.message,
+                            icon: 'icofont icofont-info-square',
+                            type: 'info'
+                        });
+                    }
+                    else {
+                        var urls = "@Url.Action("Upsert", "RequestItems", new { Area = "Users" })";
+                        window.location.href = urls;
+                    }
+                }
+            });
         }
 
     </script>

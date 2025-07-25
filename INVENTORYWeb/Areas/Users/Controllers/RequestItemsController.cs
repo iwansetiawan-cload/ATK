@@ -114,7 +114,27 @@ namespace INVENTORYWeb.Areas.Users.Controllers
             var allObj = await _unitOfWork.Items.GetAllAsync(includeProperties: "CATEGORY");          
             return Json(new { data = allObj });
         }
-        public IActionResult Upsert(long? id, bool view)
+        [HttpGet]
+        public ActionResult ValidationCreateNew()
+        {
+            try
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+                REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.GetAll().Where(z => z.CREATE_BY == user.UserName && z.STATUS_ID >= 0 && z.REQUEST_DATE.Value.Year == DateTime.Now.Year && z.REQUEST_DATE.Value.Month == DateTime.Now.Month).FirstOrDefault();
+                if (rEQUEST_ITEM_HEADER != null)
+                    return Json(new { success = true, message = "Anda sudah melakukan permintaan barang di bulan ini..!" });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = string.Empty });                
+            }            
+
+            return Json(new { success = false, message = string.Empty });
+        }
+        public IActionResult Upsert(long? id)
         {
             var listProject = _unitOfWork.MasterProject.GetAll().Select(x => new SelectListItem { Value = x.PROJECT_NAME, Text = x.PROJECT_NAME });
             ViewBag.ProjectList = new SelectList(listProject, "Value", "Text");
@@ -127,20 +147,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 REQUEST_ITEM_DETAIL = new(),
             };
             if (id == null || id == 0)
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
-
-                REQUEST_ITEM_HEADER rEQUEST_ITEM_HEADER = _unitOfWork.RequestItemHeader.GetAll().Where(z=> z.CREATE_BY == user.UserName && z.STATUS_ID >= 0 && z.REQUEST_DATE.Value.Year == DateTime.Now.Year && z.REQUEST_DATE.Value.Month == DateTime.Now.Month).FirstOrDefault();
-                if (rEQUEST_ITEM_HEADER != null)
-                {
-                    TempData["Information"] = "Anda sudah melakukan permintaan barang di bulan ini..!";
-                    if(view)
-                        return RedirectToAction(nameof(ListView));
-                    else
-                        return RedirectToAction(nameof(Index));
-                }
+            {                
                 return View(vm);
             }
             else
@@ -611,7 +618,7 @@ namespace INVENTORYWeb.Areas.Users.Controllers
                 requestItemHeader.COMPLETED_NOTES = notes ?? "";
                 _unitOfWork.RequestItemHeader.Update(requestItemHeader);
 
-                List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == id).ToList();
+                List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll().Where(z => z.HEADER_ID == id && z.STATUS == "Process").ToList();
                 foreach (var requestItemDetail in requestItemDetailList)
                 {
                     requestItemDetail.STATUS_ID = status?.INUM1;

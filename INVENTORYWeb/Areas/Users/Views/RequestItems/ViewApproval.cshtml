@@ -286,10 +286,15 @@
                 "createdRow": function (row, data, index) {
                     $('td', row).eq(2).attr("style", "text-align: right");
                     $('td', row).eq(3).attr("style", "text-align: right");
-                    $('td', row).eq(5).attr("style", "text-align: right");
-                    if (data[4] == "Approve") {
-                        tr.addClass('success');
-                    }                   
+                    $('td', row).eq(5).attr("style", "text-align: right");                 
+                    var _status = "";
+                    if (data["status"] == 'Process' || data["status"] == 'Complete') {
+                        _status += '' + data["status"] + '&nbsp; <i class="icofont icofont-check-circled text-success f-20" > </i>';
+                        $('td', row).eq(4).html(_status);
+                    } else {
+                        _status += '' + data["status"] + '';
+                        $('td', row).eq(4).html(_status);
+                    }
                 }
             });
         }

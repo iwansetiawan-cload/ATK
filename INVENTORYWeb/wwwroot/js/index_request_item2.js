@@ -79,3 +79,24 @@ function Delete(url) {
         });
 
 }
+function ValAdd() {
+   
+    $.ajax({
+        type: "GET",
+        url: "/Users/RequestItems/ValidationCreateNew",
+        success: function (data) {
+            if (data.success) {
+                new PNotify({
+                    title: 'Information ',
+                    text: data.message,
+                    icon: 'icofont icofont-info-square',
+                    type: 'info'
+                });
+            }
+            else {
+               
+                window.location.href = "/Users/RequestItems/Upsert";
+            }
+        }
+    });
+}
