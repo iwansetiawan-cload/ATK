@@ -35,62 +35,135 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h5>Cari Data</h5>
+                                    @* <div class="nav-item nav-grid">
+                                        <div class="tool-box">
+                                          
+
+                                            <div class="nav-item nav-grid">
+                                                <a type="button" class="waves-light m-r-15" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="ExportData" data-toggle="tooltip" data-placement="top">
+                                                    <i class="fa fa-file-pdf-o text-c-red f-30"></i>
+                                                </a>
+                                                <a type="button" class="waves-light" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="ExportData" data-toggle="tooltip" data-placement="top">
+                                                    <i class="fa fa-file-excel-o text-c-green f-30"></i>
+                                                </a>
+                                                <span class="f-left m-r-5 text-inverse">Download:&nbsp;&nbsp</span>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div> *@
                                 </div>
-                                <div class="card-block">
+                                <div class="card-block">  
+                                 
+
                                     <form method="get">
-
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">No Transaksi</label>
-                                            <div class="col-sm-4">
-                                                <input type="text" asp-for="searchRequestNumber" class="form-control">
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">No Transaksi</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" asp-for="request_number" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Nama Proyek</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" asp-for="project_name" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Periode</label>
+                                                        <div class="col-sm-5">
+                                                            <select asp-for="month" class="form-control form-select">
+                                                                <option selected value="">All</option>
+                                                                <option value="1">Januari</option>
+                                                                <option value="2">Februari</option>
+                                                                <option value="3">Maret</option>
+                                                                <option value="4">April</option>
+                                                                <option value="5">Mei</option>
+                                                                <option value="6">Juni</option>
+                                                                <option value="7">Juli</option>
+                                                                <option value="8">Agustus</option>
+                                                                <option value="9">September</option>
+                                                                <option value="10">Oktober</option>
+                                                                <option value="11">November</option>
+                                                                <option value="12">Desember</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <input type="number" asp-for="year" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Status</label>
+                                                        <div class="col-sm-9">
+                                                            <select asp-for="status" asp-items="@ViewBag.listStatus" class="form-control form-select">
+                                                                <option selected value="">All</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                           
                                         </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Nama Proyek</label>
-                                            <div class="col-sm-4">
-                                                <input type="text" asp-for="searchProjectName" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Status</label>
-                                            <div class="col-sm-4">
-                                                <select asp-for="searchStatus" asp-items="@ViewBag.listStatus" class="form-control form-select">
-                                                    <option selected value="">All</option>
-                                                </select>
-                                            </div> 
-                                      
 
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-6">
-                                                <br />
-                                                <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-ui-search"></i>Cari</button>                                                
+                                       @*  <div class="row text-center">
+                                            <div class="col-sm-12 invoice-btn-group text-center">
+                                                <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-ui-search"></i>Cari</button>
                                                 <a type="button" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="" class="btn btn-primary waves-effect waves-light" data-placement="right"><i class="icofont icofont-ui-rotation"></i>Reset</a>
 
                                             </div>
-                                            <div class="col-sm-6">
-                                                <br />
-                                                <div class="task-board m-0">
-                                                    <button type="button" class="btn btn-primary waves-effect waves-light m-r-15" data-placement="right"><i class="icofont icofont-download-alt"></i>Download</button>
-                                                </div>
-                                               
-                                               @*  <div class="nav-item nav-grid">
-                                                    <div class="tool-box">
 
-                                                        <div class="nav-item nav-grid">
-                                                            <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10 f-left" asp-action="Upsert" data-toggle="tooltip" data-placement="top" title="tambah data">
-                                                                <i class="icofont icofont-download-alt"></i>
-                                                            </a>
+                                        </div> *@
+
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group row">
+                                                <div class="col-sm-6">
+                                                 
+                                                    <button type="submit" class="btn btn-primary waves-effect waves-light m-r-15 btn-sm" data-placement="right"><i class="icofont icofont-ui-search"></i>Cari</button>
+                                                    <a type="button" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="" class="btn btn-primary waves-effect waves-light btn-sm" data-placement="right"><i class="icofont icofont-ui-rotation"></i>Reset</a>
+
+                                                </div>
+                                             
+                                                <div class="col-sm-6">                                                  
+                                                 
+                                                    @* <div class="nav-item nav-grid">
+                                                        <span class="f-button m-r-5 text-inverse">Download:&nbsp;&nbsp</span>
+                                                        <a type="button" class="waves-light m-r-15" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="ExportData" data-toggle="tooltip" data-placement="top">
+                                                            <i class="fa fa-file-pdf-o text-c-red f-30"></i>
+                                                        </a>
+                                                        <a type="button" class="waves-light" asp-area="Admin" asp-controller="ReportRequestItems" asp-action="ExportData" data-toggle="tooltip" data-placement="top">
+                                                            <i class="fa fa-file-excel-o text-c-green f-30"></i>
+                                                        </a>
+                                                       
+                                                    </div> *@
+                                                    <div class="nav-item nav-grid">
+                                                        <div class="tool-box">
+                                                            <div class="dropdown-secondary dropdown f-right">
+                                                          
+                                                                <button class="btn btn-primary btn-sm dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-download"></i></button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportPDF()"><i class="fa fa-file-pdf-o text-c-red f-20"></i> File.pdf</a>
+                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportExcel()"><i class="fa fa-file-excel-o text-c-green f-20"></i> File.xls</a>
+                                                                    
+                                                                   
+                                                                </div>
+                                                             
+
+                                                            </div>
+
                                                         </div>
 
                                                     </div>
-
-                                                </div> *@
+                                                </div>
                                             </div>
-
                                         </div>
-
-
+                                    
                                     </form>
 
                                 </div>
@@ -160,38 +233,40 @@
 
 </div>
 
-@* @section Scripts {
-
-    <script src="~/js/index_report_request_items.js"></script>
-}
- *@
-@* @section Scripts {
+@section Scripts{
     <script type="text/javascript">
+        function ExportExcel() {
 
-        $(document).ready(function () {
-            loadData();
-        });
-
-        function loadData() {
-          
-            dataTable = $('#no-style').DataTable({
-                "order": [[0, "desc"]],
-                "bFilter": false,
-                "ajax": {
-                    "url": "/Admin/ReportRequestItems/GetAll"
-                },
-                "columns": [
-                    { "data": "transaction_number", "autoWidth": true },
-                    { "data": "project_name", "autoWidth": true },
-                    { "data": "request_date", "autoWidth": true },
-                    { "data": "notes", "autoWidth": true },
-                    { "data": "status", "autoWidth": true }                  
-                ]
-                
-            });
+            if ($("#request_number").val() == '' && $("#project_name").val() == '' && $("#month").val() == '' && $("#year").val() == '' && $("#status").val() == '') {
+                new PNotify({
+                    title: 'Information ',
+                    text: "Pilih pencarian data terlebih dahulu..!",
+                    icon: 'icofont icofont-info-square',
+                    type: 'info'
+                });
+            }
+            else {
+                var url = "@Url.Action("ExportData", "ReportRequestItems", new { Area = "Admin" })";
+                window.location = url;
+            }            
+           
         }
-     
+        function ExportPDF() {
 
-    </script>
+            if ($("#request_number").val() == '' && $("#project_name").val() == '' && $("#month").val() == '' && $("#year").val() == '' && $("#status").val() == '') {
+                new PNotify({
+                    title: 'Information ',
+                    text: "Pilih pencarian data terlebih dahulu..!",
+                    icon: 'icofont icofont-info-square',
+                    type: 'info'
+                });
+            }
+            else {
+                var url = "@Url.Action("ExportPDF", "ReportRequestItems", new { Area = "Admin" })";
+                window.open(url, "_blank");
+            }
 
-} *@
+        }
+
+     </script>
+}

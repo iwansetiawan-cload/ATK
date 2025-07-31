@@ -109,7 +109,8 @@
                                                         <div class="col-sm-8">
                                                             <div class="input-group input-group-button">
                                                                 <input type="hidden" asp-for="UserIdS1" class="form-control" id="idS1" />
-                                                                <input asp-for="UserNameS1" class="form-control" style="row-gap" id="userNameS1" disabled />
+                                                                <input type="hidden" asp-for="UserNameS1" class="form-control" id="nameS1" />
+                                                                <input asp-for="UserNameS1" class="form-control" style="row-gap" disabled />
                                                                 <div class="input-group-append">
                                                                     <button class="btn btn-primary" data-toggle="modal" data-target="#lookupUserProfile" type="button"><i class="fa fa-binoculars"></i></button>
                                                                 </div>
@@ -211,7 +212,8 @@
         function select_row(obj) {
             var name = $('td', obj).eq(0).html().trim();
             var Id = $('td', obj).eq(4).html().trim();
-            $('#userNameS1').val(name);
+            $('#nameS1').val(name);
+            $('#UserNameS1').val(name);            
             $('#idS1').val(Id);
         }
 

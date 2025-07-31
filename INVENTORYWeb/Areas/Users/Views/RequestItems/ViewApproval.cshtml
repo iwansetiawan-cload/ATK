@@ -88,108 +88,93 @@
                                                                   
                                       
                                     </div>
-                                    <div class="card-block">                             
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group row pt-2">
+                                    <div class="card-block">
 
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label>
-                                                            </div>
-                                                            <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" readonly />
-                                                            </div>
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label" asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME"></label>
+                                                        <div class="col-sm-9">
+                                                            <input asp-for="REQUEST_ITEM_HEADER.PROJECT_NAME" class="form-control" style="row-gap" readonly />
                                                         </div>
-
                                                     </div>
-
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
-                                                            </div>
-                                                            <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" readonly />
-                                                            </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label" asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
+                                                        <div class="col-sm-9">
+                                                            <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap" readonly></textarea>
                                                         </div>
-
                                                     </div>
                                                 </div>
-                                                <div class="form-group row pt-2">
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-                                                            <div class="col-3">
-                                                                <label asp-for="REQUEST_ITEM_HEADER.NOTES"></label>
-                                                            </div>
-                                                            <div class="col-9">
-                                                                <textarea asp-for="REQUEST_ITEM_HEADER.NOTES" class="form-control" style="row-gap" readonly></textarea>
-                                                            </div>
+                                                <div class="col-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label" asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE"></label>
+                                                        <div class="col-sm-9">
+                                                            <input asp-for="REQUEST_ITEM_HEADER.REQUEST_DATE" class="form-control" type="date" readonly />
                                                         </div>
-
                                                     </div>
-                                                    <div class="col-6">
-                                                        <div class="form-group row">
-
-                                                            <label class="col-sm-3 col-form-label">Jumlah Permintaan</label>
-                                                            <div class="col-9">
-                                                                <input asp-for="REQUEST_ITEM_HEADER.TOTAL_QTY" class="form-control" style="row-gap" asp-format="{0:#,###}" id="TOTAL_QTY" readonly />
-                                                            </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Due Date</label>
+                                                        <div class="col-sm-9">
+                                                            <input asp-for="REQUEST_ITEM_HEADER.DUEDATE" class="form-control" type="date" readonly />
                                                         </div>
-
-                                                    </div>
-                                                </div>
-
-                                           @*      @if (@status == "Approve")
-                                                {
-                                                    <a asp-action="Index" class="btn btn-primary btn-outline-primary f-right previous m-b-10 btn-sm"><i class="icofont icofont-ui-check"></i>Complete</a> 
-                                                }
-                                                 *@
-                                            </div>
-                                         
-
-                                            <div class="col-12">
-                                                <div class="card-block">
-                                                    <div class="dt-responsive table-responsive">
-                                                        <table id="tblData" class="table table-striped table-bordered nowrap" style="width:100%">
-                                                            <thead>
-
-                                                                <tr>
-                                                                    <th>
-                                                                        Nama Item
-                                                                    </th>
-
-                                                                    <th>
-                                                                        Satuan
-                                                                    </th>
-
-                                                                    <th>
-                                                                        Isi
-                                                                    </th>
-                                                                    <th style="min-width:10px">
-                                                                        Jumlah
-                                                                    </th>
-                                                                    <th>
-                                                                        Status
-                                                                    </th>
-                                                                    <th style="min-width:10px">
-                                                                        Adjust
-                                                                    </th>
-                                                                    <th>
-                                                                        Notes
-                                                                    </th>
-                                                                </tr>
-                                                            </thead>
-
-                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                    </div>
+                                        <div class="card-block">
+                                            <div class="dt-responsive table-responsive">
+                                                <table id="tblData" class="table table-striped table-bordered nowrap" style="width:100%">
+                                                    <thead>
 
+                                                        <tr>
+                                                            <th>
+                                                                Nama Item
+                                                            </th>
+
+                                                            <th>
+                                                                Satuan
+                                                            </th>
+
+                                                            <th>
+                                                                Isi
+                                                            </th>
+                                                            <th style="min-width:10px">
+                                                                Jumlah
+                                                            </th>
+                                                            <th>
+                                                                Status
+                                                            </th>
+                                                            <th style="min-width:10px">
+                                                                Adjust
+                                                            </th>
+                                                            <th>
+                                                                Notes
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table class="table table-responsive invoice-table invoice-total">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Jumlah Permintaan :</th>
+                                                            <td style="min-width:10px">@Model.REQUEST_ITEM_HEADER.TOTAL_QTY</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                                 @if (@ViewBag.View)
                                 {

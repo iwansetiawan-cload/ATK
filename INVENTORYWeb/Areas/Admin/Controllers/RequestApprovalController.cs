@@ -436,7 +436,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                     SaveAuditTrail(auditTrailInfo);
 
                     #region Post Detail
-                    List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z => z.HEADER_ID == requestItemHeader.ID && z.STATUS == "Approve").ToList();
+                    List<REQUEST_ITEM_DETAIL> requestItemDetailList = _unitOfWork.RequestItemDetail.GetAll(includeProperties: "ITEMS").Where(z => z.HEADER_ID == requestItemHeader.ID && (z.STATUS_ID == 1 || z.STATUS_ID == 4)).ToList();
                     foreach (var requestItemDetail in requestItemDetailList)
                     {
                         PurchaseRequestDetailViewModel bodyDetail = new()
@@ -589,7 +589,8 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
-                var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 1).FirstOrDefault();
+                var status_header = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 1).FirstOrDefault();
+                var status = _unitOfWork.MSUDC.GetAll().Where(z => z.ENTRY_KEY == "status" && z.INUM1 == 4).FirstOrDefault();
 
                 REQUEST_ITEM_DETAIL requestItemDetail = _unitOfWork.RequestItemDetail.Get(id);
                 requestItemDetail.STATUS_ID = status?.INUM1;
@@ -605,8 +606,8 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
 
                 #region Update Header
                 REQUEST_ITEM_HEADER requestItemHeader = _unitOfWork.RequestItemHeader.Get(requestItemDetail.HEADER_ID);
-                requestItemHeader.STATUS_ID = status?.INUM1;
-                requestItemHeader.STATUS = status?.TEXT1;
+                requestItemHeader.STATUS_ID = status_header?.INUM1;
+                requestItemHeader.STATUS = status_header?.TEXT1;
                 requestItemHeader.APPROVE_BY = user.UserName;
                 requestItemHeader.APPROVE_DATE = DateTime.Now;
                 requestItemHeader.REJECTED_BY = null;
@@ -631,7 +632,7 @@ namespace INVENTORYWeb.Areas.Admin.Controllers
                 SaveAuditTrail(auditTrailInfo);
 
                 TempData["Success"] = "Simpan Berhasil";        
-                return Json(new { success = true, message = "Data Adjust disimpan", status = status?.TEXT1 ?? string.Empty });
+                return Json(new { success = true, message = "Data Adjust disimpan", status = status_header?.TEXT1 ?? string.Empty });
 
             }
             catch (Exception)
