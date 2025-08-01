@@ -16,5 +16,7 @@ namespace INVENTORYWeb.Utility
         public const string Proc_Get_AuditTrail_ById = "Sp_GetAuditTrail_ById";
         public const string Proc_Get_MasterProject = "Sp_GetMasterProject";
 
+        public const string Proc_Dashboard_Get_Items = "Proc_GetDataDashboard";
+
     }
 }

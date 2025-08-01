@@ -148,8 +148,8 @@
                                                           
                                                                 <button class="btn btn-primary btn-sm dropdown-toggle waves-light b-none txt-muted" type="button" id="dropdown16" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-download"></i></button>
                                                                 <div class="dropdown-menu" aria-labelledby="dropdown16" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportPDF()"><i class="fa fa-file-pdf-o text-c-red f-20"></i> File.pdf</a>
-                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportExcel()"><i class="fa fa-file-excel-o text-c-green f-20"></i> File.xls</a>
+                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportPDF()"><i class="fa fa-file-pdf-o text-c-red f-15"></i> File.pdf</a>
+                                                                    <a class="dropdown-item waves-light waves-effect" onclick="ExportExcel()"><i class="fa fa-file-excel-o text-c-green f-15"></i> File.xls</a>
                                                                     
                                                                    
                                                                 </div>
@@ -181,6 +181,7 @@
                                                 <tr>
                                                     <th>No Transaksi</th>
                                                     <th>Nama Proyek</th>
+                                                    <th>User</th>
                                                     <th>Tanggal Permintaan</th>
                                                     <th>Keterangan</th>
                                                     <th>Status</th>
@@ -197,6 +198,9 @@
                                                             </td>
                                                             <td>
                                                                 @item.PROJECT_NAME
+                                                            </td>
+                                                            <td>
+                                                                @item.CREATE_BY
                                                             </td>
                                                             <td>
                                                                 @if (@item!.REQUEST_DATE!.HasValue)

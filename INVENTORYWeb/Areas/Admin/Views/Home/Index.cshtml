@@ -3,3 +3,582 @@
 *@
 @{
 }
+@model INVENTORYWeb.Models.ViewModels.DashboardViewModel
+
+<div class="pcoded-content">
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Dashboard</h5>
+                        <p class="m-b-0">Welcome dashboard</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-footer-title text-right">
+                        <h4 class="m-b-0"><a href="/" class="text-white">Help</a> </h4>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action=""> <i class="fa fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcoded-inner-content">
+        <!-- Main-body start -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- Page-body start -->
+                <div class="page-body">
+                    <div class="row">
+                        <!-- task, page, download counter  start -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card">
+                                <div class="card-block">
+                                    <div class="row align-items-center">
+                                        <div class="col-8">
+                                            <h4 class="text-c-purple">@Model.Status_NewRequest</h4>
+                                            <h6 class="text-muted m-b-0">New Request</h6>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <i class="fa fa-bar-chart f-28"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-c-purple">
+                                    <div class="row align-items-center">
+                                        <div class="col-9">
+                                            <p class="text-white m-b-0">Status</p>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <i class="fa fa-line-chart text-white f-16"></i>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card">
+                                <div class="card-block">
+                                    <div class="row align-items-center">
+                                        <div class="col-8">
+                                            <h4 class="text-c-red">@Model.Status_ApproveAndReject</h4>
+                                            <h6 class="text-muted m-b-0">Approve/ Rejected</h6>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <i class="fa fa-calendar-times-o f-28"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-c-red">
+                                    <div class="row align-items-center">
+                                        <div class="col-9">
+                                            <p class="text-white m-b-0">Status</p>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <i class="fa fa-line-chart text-white f-16"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card">
+                                <div class="card-block">
+                                    <div class="row align-items-center">
+                                        <div class="col-8">
+                                            <h4 class="text-c-green">@Model.Status_Process</h4>
+                                            <h6 class="text-muted m-b-0">Process</h6>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <i class="fa fa-calendar-check-o f-28"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-c-green">
+                                    <div class="row align-items-center">
+                                        <div class="col-9">
+                                            <p class="text-white m-b-0">Status</p>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <i class="fa fa-line-chart text-white f-16"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card">
+                                <div class="card-block">
+                                    <div class="row align-items-center">
+                                        <div class="col-8">
+                                            <h4 class="text-c-blue">@Model.Status_Complete</h4>
+                                            <h6 class="text-muted m-b-0">Completed</h6>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <i class="fa fa-thumbs-o-up f-28"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-c-blue">
+                                    <div class="row align-items-center">
+                                        <div class="col-9">
+                                            <p class="text-white m-b-0">Status</p>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <i class="fa fa-line-chart text-white f-16"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        <div class="col-xl-8 col-md-12">                          
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Pergerakan Barang Yang Dipesan</h5>
+                                </div>
+                                <div class="card-block">
+                                    <canvas id="barChartItem" height="320"></canvas>
+                                </div>
+                            </div>                         
+                        </div>
+                        <div class="col-xl-4 col-md-12">
+                            <div class="card table-card">
+                                <div class="card-header">
+                                    <h5>Data Pergerakan Barang</h5>
+                                    <div class="nav-item nav-grid">
+                                        <div class="tool-box">
+                                            <div class="nav-item nav-grid">
+                                                <button type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10 f-left" onclick="ValAdd()" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                                    <i class="icofont icofont-plus m-r-5"></i>
+                                                </button>                                              
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                               @*      <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                            <li><i class="fa fa-window-maximize full-card"></i></li>
+                                            <li><i class="fa fa-minus minimize-card"></i></li>
+                                            <li><i class="fa fa-refresh reload-card"></i></li>
+                                            <li><i class="fa fa-trash close-card"></i></li>
+                                        </ul>
+                                        <a type="button" class="btn btn-sm btn-primary waves-effect waves-light m-r-10 f-left" onclick="ValAdd()" data-toggle="tooltip" data-placement="top" title="tambah data">
+                                            <i class="icofont icofont-plus m-r-5"></i>
+                                        </a>
+                                    </div> *@
+                                </div>
+                                <div class="card-block">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama Barang</th>
+                                                    <th>Satuan</th>
+                                                    <th>Set</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var obj in @Model.mSUDCList ?? [])
+                                                {
+                                                    var label_color = "";
+                                                    if (@obj.TEXT1 == @Model.Item1)
+                                                    {
+                                                        label_color = "label-success";
+                                                    }
+                                                    else if (@obj.TEXT1 == @Model.Item2)
+                                                    {
+                                                        label_color = "label-primary";
+                                                    }
+                                                    else if (@obj.TEXT1 == @Model.Item2)
+                                                    {
+                                                        label_color = "label-warning";
+                                                    }
+                                                    else if (@obj.TEXT1 == @Model.Item2)
+                                                    {
+                                                        label_color = "label-danger";
+                                                    }
+                                                    else if (@obj.TEXT1 == @Model.Item2)
+                                                    {
+                                                        label_color = "label-info";
+                                                    }
+                                               
+                                                    <tr>
+                                                        <td>
+                                                            <label class="label @label_color">@obj.TEXT1</label>
+                                                        </td>
+                                                        <td>@obj.TEXT2</td>
+                                                        <td>@obj.TEXT3</td>
+                                                    </tr>
+                                                }
+                                               @*  <tr>
+                                                    <td>
+                                                        <label class="label label-success">Buku Tulis</label>                                                        
+                                                    </td>
+                                                    <td>SET</td>
+                                                    <td>20</td>
+                                                    <td>Merek Sidu</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <label class="label label-primary">Kertas HVS</label>
+                                                    </td>
+                                                    <td>RAM</td>
+                                                    <td>100</td>
+                                                    <td>Merek PaperOne</td>
+                                                </tr> *@
+                                         
+                                            </tbody>
+                                        </table>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-8 col-md-12">
+                            <div class="card table-card">
+                                <div class="card-header">
+                                    <h5>Transaksi Bulan Ini</h5>
+                                    <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                            <li><i class="fa fa-window-maximize full-card"></i></li>
+                                            <li><i class="fa fa-minus minimize-card"></i></li>
+                                            <li>
+                                                <a asp-area="Admin" asp-controller="Home" asp-action="" class="fa fa-refresh reload-card">                                              
+                                                </a>
+                                             </li>
+                                            <li><i class="fa fa-trash close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-block">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>No Transaksi</th>
+                                                    <th>Name Proyek</th>
+                                                    <th>Request Date</th>
+                                                    <th>Due Date</th>
+                                                    <th class="text-right">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var obj in @Model.MonthlyTransactionList ?? [])
+                                                {
+                                                    var status_label = "";
+                                                    switch (@obj.STATUS)
+                                                    {
+                                                        case "New Request":
+                                                            status_label = "label-primary";
+                                                            break;
+                                                        case "Rejected":
+                                                            status_label = "label-danger";
+                                                            break;
+                                                        case "Approve":
+                                                            status_label = "label-success";
+                                                            break;
+                                                        case "Process":
+                                                            status_label = "label-success";
+                                                            break;
+                                                        case "Complete":
+                                                            status_label = "label-info";
+                                                            break;
+                                                    }
+                                                    <tr>
+                                                        <td>
+                                                            @obj.REQUEST_ORDER_NO
+                                                        </td>
+                                                        <td>
+                                                            @obj.PROJECT_NAME
+                                                        </td>
+                                                        <td>
+                                                            @if (obj.REQUEST_DATE != null)
+                                                            {
+                                                                @obj.REQUEST_DATE.Value.ToString("MMM dd")
+                                                            }
+                                                           
+                                                        </td>
+                                                        <td>
+                                                            @if (obj.DUEDATE != null)
+                                                            {
+                                                                @obj.DUEDATE.Value.ToString("MMM dd")
+                                                            }
+                                                           
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <label class="label @status_label">@obj.STATUS</label>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                @* <tr>
+                                                <td>
+                                                PR/00001/VII/25/RDS
+                                                </td>
+                                                <td>ALLIANZ  DMC</td>
+                                                <td>Juli, 26</td>
+                                                <td class="text-right"><label class="label label-danger">Rejected</label></td>
+                                                </tr>
+                                                <tr>
+                                                <td>
+                                                PR/00002/VII/25/RDS
+                                                </td>
+                                                <td>AIA RC</td>
+                                                <td>Juli, 31</td>
+                                                <td class="text-right"><label class="label label-primary">Completed</label></td>
+                                                </tr>
+                                                <tr>
+                                                <td>
+                                                PR/00003/VII/25/RDS
+                                                </td>
+                                                <td>AXA DMC</td>
+                                                <td>Juli, 02</td>
+                                                <td class="text-right"><label class="label label-success">Process</label></td>
+                                                </tr>
+                                                <tr>
+                                                <td>
+                                                PR/00004/VII/25/RDS
+                                                </td>
+                                                <td>ALLIANZ  Semarang</td>
+                                                <td>Juli, 22</td>
+                                                <td class="text-right"><label class="label label-primary">Completed</label></td>
+                                                </tr> *@
+                                            </tbody>
+                                        </table>
+                                        @if (@Model.MonthlyTransactionList.Count > 5)
+                                        {
+                                            <div class="text-right m-r-20">
+                                                <a href="#!" class=" b-b-primary text-primary">View all Data</a>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-12">
+
+                            <div class="card quater-card">
+                                <div class="card-header">
+                                    <h5>Transaksi Tahun Ini</h5>
+                                    <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                            <li><i class="fa fa-window-maximize full-card"></i></li>
+                                            <li><i class="fa fa-minus minimize-card"></i></li>
+                                            <li>
+                                                <a asp-area="Admin" asp-controller="Home" asp-action="" class="fa fa-refresh reload-card">
+                                                </a>
+                                            </li>
+                                            <li><i class="fa fa-trash close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-block">
+                                    <h5>Total Request: @Model.TotalRequestTahunan</h5>
+                                    <p/>
+                                    <h5>@Model.Status_NewRequest_Current</h5>
+                                    <p class="text-muted">New Request<span class="f-right">@Model.Persen_NewRequest_Current %</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-c-purple" style="width: @Model.Persen_NewRequest%"></div>
+                                    </div>
+                                    <h5 class="m-t-15">@Model.Status_Approve_Current</h5>
+                                    <p class="text-muted">Approve<span class="f-right">@Model.Persen_Approve_Current %</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-c-blue" style="width: @Model.Persen_Approve%"></div>
+                                    </div>
+                                    <h5 class="m-t-15">@Model.Status_Reject_Current</h5>
+                                    <p class="text-muted">Reject<span class="f-right">@Model.Persen_Reject_Current %</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-c-red" style="width: @Model.Persen_Reject%"></div>
+                                    </div>
+                                    <h5 class="m-t-15">@Model.Status_Process_Current</h5>
+                                    <p class="text-muted">Process<span class="f-right">@Model.Persen_Process_Current %</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-c-green" style="width: @Model.Persen_Process%"></div>
+                                    </div>
+
+                                    <h5 class="m-t-15">@Model.Status_Complete_Current</h5>
+                                    <p class="text-muted">Complete<span class="f-right">@Model.Persen_Complete_Current %</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar btn-info" style="width: @Model.Persen_Complete%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page-body end -->
+            </div>
+          
+        </div>
+    </div>  
+</div>
+
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script type="text/javascript" src="/files/assets/pages/dashboard/custom-dashboard.js"></script>
+
+
+@* <!-- Required Jquery -->
+<script type="text/javascript" src="/files/bower_components/jquery/js/jquery.min.js"></script>
+<script type="text/javascript" src="/files/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/files/bower_components/popper.js/js/popper.min.js"></script>
+<script type="text/javascript" src="/files/bower_components/bootstrap/js/bootstrap.min.js"></script>
+<!-- waves js -->
+<script src="/files/assets/pages/waves/js/waves.min.js"></script>
+<!-- jquery slimscroll js -->
+<script type="text/javascript" src="/files/bower_components/jquery-slimscroll/js/jquery.slimscroll.js"></script>
+<!-- modernizr js -->
+<script type="text/javascript" src="/files/bower_components/modernizr/js/modernizr.js"></script>
+<script type="text/javascript" src="/files/bower_components/modernizr/js/css-scrollbars.js"></script>
+<!-- Chart js -->
+<script type="text/javascript" src="/files/bower_components/chart.js/js/Chart.js"></script>
+<!-- chart Custom js -->
+<script src="/files/assets/pages/invoice-summary/invoice-summary.js"></script> *@
+@* <!-- Custom js -->
+<script src="/files/assets/js/pcoded.min.js"></script>
+<script src="/files/assets/js/vertical/vertical-layout.min.js"></script>
+<script src="/files/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script type="text/javascript" src="../files/assets/js/script.js"></script> *@
+
+
+@section Scripts {
+
+
+    <script type="text/javascript">
+
+        // $(document).ready(function () {
+        //     loadDataItems();
+        // });
+       
+        $(document).ready(function () {
+
+            var item1 = "@Model.Item1";// $("#curent_status").val();
+            var item2 = "@Model.Item2";
+            // var item3 = "@Model.Item3";
+            // var item4 = "@Model.Item4";
+            // var item5 = "@Model.Item5";
+
+            var item1_Qtyjan = "@Model.Jan_Item1";
+            var item1_Qtyfeb = "@Model.Feb_Item1";
+            var item1_Qtymar = "@Model.Mar_Item1";
+            var item1_Qtyapr = "@Model.Apr_Item1";
+            var item1_Qtymay = "@Model.May_Item1";
+            var item1_Qtyjun = "@Model.Jun_Item1";
+            var item1_Qtyjul = "@Model.Jul_Item1";
+            var item1_Qtyaug = "@Model.Aug_Item1";
+            var item1_Qtysep = "@Model.Sep_Item1";
+            var item1_Qtyokt = "@Model.Okt_Item1";
+            var item1_Qtynov = "@Model.Nov_Item1";
+            var item1_Qtydes = "@Model.Des_Item1";
+
+            var item2_Qtyjan = "@Model.Jan_Item2";
+            var item2_Qtyfeb = "@Model.Feb_Item2";
+            var item2_Qtymar = "@Model.Mar_Item2";
+            var item2_Qtyapr = "@Model.Apr_Item2";
+            var item2_Qtymay = "@Model.May_Item2";
+            var item2_Qtyjun = "@Model.Jun_Item2";
+            var item2_Qtyjul = "@Model.Jul_Item2";
+            var item2_Qtyaug = "@Model.Aug_Item2";
+            var item2_Qtysep = "@Model.Sep_Item2";
+            var item2_Qtyokt = "@Model.Okt_Item2";
+            var item2_Qtynov = "@Model.Nov_Item2";
+            var item2_Qtydes = "@Model.Des_Item2";
+
+           
+            /*Bar chart*/           
+
+            if (item1 != null && item2 == '') {
+                var data1 = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+                    datasets: [{
+                        label: item1,
+                        backgroundColor: [
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71'
+                        ],
+
+                        data: [item1_Qtyjan, item1_Qtyfeb, item1_Qtymar, item1_Qtyapr, item1_Qtymay, item1_Qtyjun, item1_Qtyjul, item1_Qtyaug, item1_Qtysep, item1_Qtyokt, item1_Qtynov, item1_Qtydes],
+                    }]
+                };
+            } else if (item1 != null && item2 != '') {
+                var data1 = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+                    datasets: [{
+                        label: item1,
+                        backgroundColor: [
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71',
+                            '#2ECC71'
+                        ],
+
+                        data: [item1_Qtyjan, item1_Qtyfeb, item1_Qtymar, item1_Qtyapr, item1_Qtymay, item1_Qtyjun, item1_Qtyjul, item1_Qtyaug, item1_Qtysep, item1_Qtyokt, item1_Qtynov, item1_Qtydes],
+                    }, {
+                        label: item2,
+                        backgroundColor: [
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe',
+                            '#536dfe'
+                        ],
+
+                        data: [item2_Qtyjan, item2_Qtyfeb, item2_Qtymar, item2_Qtyapr, item2_Qtymay, item2_Qtyjun, item2_Qtyjul, item2_Qtyaug, item2_Qtysep, item2_Qtyokt, item2_Qtynov, item2_Qtydes],
+                    }]
+                };
+            }
+
+            var bar = document.getElementById("barChartItem").getContext('2d');
+            var myBarChart = new Chart(bar, {
+                type: 'bar',
+                data: data1,
+                options: {
+                    barValueSpacing: 20,
+                    maintainAspectRatio: false,
+                }
+            });
+        });
+
+
+    </script>
+
+}

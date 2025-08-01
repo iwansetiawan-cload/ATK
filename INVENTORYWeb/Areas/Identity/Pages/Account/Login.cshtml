@@ -1,8 +1,15 @@
 ﻿@page
+@using INVENTORYWeb.DataAccess.Repository.IRepository
+@using INVENTORYWeb.Utility
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> _roleManager
+@inject IUnitOfWork _unitOfWork
 @model LoginModel
 
 @{
     ViewData["Title"] = "Log in";
+    string? rolesName = _unitOfWork.ApplicationUser.GetAll().Where(z => z.Name == UserManager.GetUserName(User)).Select(i => i.RolesName).FirstOrDefault();
 }
 
 @inject SignInManager<IdentityUser> SignInManager
@@ -24,11 +31,11 @@
                                 <div class="row m-b-20">
                                     <div class="col-md-12">
                                         <h3 class="text-center">LOGIN</h3>
-                                        
+
                                     </div>
                                 </div>
-                                
-                                 <div class="form-floating">
+
+                                <div class="form-floating">
                                     <label class="form-label"> User Name</label>
                                     <input asp-for="Input.Name" class="form-control" autocomplete="name" aria-required="true" />                                    
                                     <span asp-validation-for="Input.Name" class="text-danger"></span>
@@ -39,7 +46,7 @@
                                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                                 </div>
 
-                          @*       <div class="form-group form-primary">
+                                @*       <div class="form-group form-primary">
                                     <input asp-for="Input.Name" type="text" name="name" class="form-control" required="">
                                     <span class="form-bar"></span>
                                     <label class="float-label">User Name</label>
@@ -82,4 +89,12 @@
         <!-- end of container-fluid -->
     </section>
 }
-
+@* else
+{
+    @if (rolesName == OI.Role_SuperAdmin || rolesName == OI.Role_Admin)
+    {
+        @Html.Partial("~/Areas/Admin/Views/Home/Index.cshtml")
+    }
+   
+}
+ *@

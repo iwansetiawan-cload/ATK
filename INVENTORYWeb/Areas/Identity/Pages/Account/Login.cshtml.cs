@@ -133,6 +133,8 @@ namespace INVENTORYWeb.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     if (AppUsers.RolesName == OI.Role_User)
                         returnUrl = Url.Content("~/Users/RequestItems/ListView");
+                    else if(AppUsers.RolesName == OI.Role_Admin || AppUsers.RolesName == OI.Role_SuperAdmin)
+                        returnUrl = Url.Content("~/Admin");
                     return LocalRedirect(returnUrl);
 
                 }
